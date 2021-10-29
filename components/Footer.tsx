@@ -4,7 +4,7 @@ import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 const StyledMain = styled.footer`
-  margin-top: 48px;
+  margin-top: 64px;
   width: 100%;
 `;
 

@@ -68,9 +68,12 @@ const RegistrationContainer = styled.div`
   justify-content: space-between;
   gap: 16px;
 `;
+const FavouritesIcon = styled.img`
+  padding: 16px 0 4px 0;
+  width: 1.5rem;
+`;
 const Divider = styled.span`
-  border-bottom: 2px solid transparent;
-  padding: 16px 0 2px 0;
+  padding: 16px 0 4px 0;
   font-family: 'Montserrat', sans-serif;
   color: #343f53;
   font-weight: 300;
@@ -83,13 +86,15 @@ const Header: FunctionComponent = () => {
       <NavigationBar>
         <LogoContainer>
           <Logo src="logo.svg" />
-          <LogoText>adogtion</LogoText>
+          <Link href="/" passHref>
+            <LogoText>adogtion</LogoText>
+          </Link>
         </LogoContainer>
         <Pages>
-          <Link href="/" passHref>
+          <Link href="/dogs" passHref>
             <PageLink>Find a dog</PageLink>
           </Link>
-          <Link href="/products" passHref>
+          <Link href="/shelters" passHref>
             <PageLink>Our shelters</PageLink>
           </Link>
           <Link href="/about" passHref>
@@ -97,11 +102,15 @@ const Header: FunctionComponent = () => {
           </Link>
         </Pages>
         <RegistrationContainer>
-          <Link href="/cart" passHref>
+          <Link href="/favourites" passHref>
+            <FavouritesIcon src="/icons/heart.svg" alt="Favourites icon" />
+          </Link>
+          <Divider>|</Divider>
+          <Link href="/register" passHref>
             <PageLink>Sign up</PageLink>
           </Link>
           <Divider>|</Divider>
-          <Link href="/cart" passHref>
+          <Link href="/login" passHref>
             <PageLink>Log in</PageLink>
           </Link>
         </RegistrationContainer>
