@@ -172,6 +172,7 @@ function Home() {
           Answer a few quick questions to see your perfect matches on Adogtion.
         </ParagraphStyled>
         <Link href="/login" passHref>
+          {/* should lead to user profile, if session doesn't exist, redirectTo login or register */}
           <LinkStyled>GET STARTED</LinkStyled>
         </Link>
       </SecondSectionStyled>
@@ -197,7 +198,7 @@ function Home() {
               We’ve compiled a checklist to help you on your new rewarding
               relationship.
             </ParagraphStyled>
-            <Link href="/login" passHref>
+            <Link href="/blog" passHref>
               <LinkStyled>LEARN MORE</LinkStyled>
             </Link>
           </InfoCardStyled>
@@ -207,7 +208,7 @@ function Home() {
               Can't adopt yet? Help provide a dog with the necessary care.
               Donations help with their food, veterinary care and trainings.
             </ParagraphStyled>
-            <Link href="/login" passHref>
+            <Link href="/blog" passHref>
               <LinkStyled>LEARN MORE</LinkStyled>
             </Link>
           </InfoCardStyled>
@@ -217,7 +218,7 @@ function Home() {
               Helpful insights on what to expect from adoption. Discover the
               stories of other pet lovers.
             </ParagraphStyled>
-            <Link href="/login" passHref>
+            <Link href="/blog" passHref>
               <LinkStyled>READ MORE</LinkStyled>
             </Link>
           </InfoCardStyled>

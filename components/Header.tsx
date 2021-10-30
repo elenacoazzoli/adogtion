@@ -97,15 +97,17 @@ const Header: FunctionComponent = () => {
           <Link href="/shelters" passHref>
             <PageLink>Our shelters</PageLink>
           </Link>
-          <Link href="/about" passHref>
+          <Link href="/blog" passHref>
             <PageLink>Blog</PageLink>
           </Link>
         </Pages>
         <RegistrationContainer>
           <Link href="/favourites" passHref>
+            {/* should lead to user profile, if session doesn't exist, redirectTo login or register */}
             <FavouritesIcon src="/icons/heart.svg" alt="Favourites icon" />
           </Link>
           <Divider>|</Divider>
+          {/* conditional rendering: if user is logged in, show username - otherwise display two links */}
           <Link href="/register" passHref>
             <PageLink>Sign up</PageLink>
           </Link>
