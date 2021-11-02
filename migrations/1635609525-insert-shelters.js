@@ -1,35 +1,35 @@
 const shelters = [
   {
-    name: 'Happy House',
-    description: 'Description for Happy House',
+    shelter_name: 'Happy House',
+    shelter_description: 'Description for Happy House',
     address: 'Via dei Mille,1000',
     region: 'Wien',
     phone: '+43699123456789',
   },
   {
-    name: 'Barking Lot',
-    description: 'Description for Braking Lot',
+    shelter_name: 'Barking Lot',
+    shelter_description: 'Description for Braking Lot',
     address: 'Via dei Mille,1000',
     region: 'Burgenland',
     phone: '+43699123456789',
   },
   {
-    name: 'Friends Fur-ever',
-    description: 'Description for Friends Fur-ever',
+    shelter_name: 'Friends Fur-ever',
+    shelter_description: 'Description for Friends Fur-ever',
     address: 'Via dei Mille,1000',
     region: 'Salzburg',
     phone: '+43699123456789',
   },
   {
-    name: 'Paws Haven',
-    description: 'Description for Paws Haven',
+    shelter_name: 'Paws Haven',
+    shelter_description: 'Description for Paws Haven',
     address: 'Via dei Mille,1000',
     region: 'Tirol',
     phone: '+43699123456789',
   },
   {
-    name: 'Under one woof',
-    description: 'Description for Under one woof',
+    shelter_name: 'Under one woof',
+    shelter_description: 'Description for Under one woof',
     address: 'Via dei Mille,1000',
     region: 'Voralberg',
     phone: '+43699123456789',
@@ -42,9 +42,9 @@ exports.up = async function up(sql) {
   for (const shelter of shelters) {
     await sql`
       INSERT INTO shelters
-        (name, description, address, region, phone)
+        (shelter_name, shelter_description, address, region, phone)
       VALUES
-        (${shelter.name}, ${shelter.description}, ${shelter.address}, ${shelter.region}, ${shelter.phone});
+        (${shelter.shelter_name}, ${shelter.shelter_description}, ${shelter.address}, ${shelter.region}, ${shelter.phone});
     `;
   }
 };
@@ -57,7 +57,7 @@ exports.down = async function down(sql) {
       DELETE FROM
         shelters
       WHERE
-        name = ${shelter.name} AND region = ${shelter.region};
+        shelter_name = ${shelter.shelter_name} AND region = ${shelter.region};
     `;
   }
 };
