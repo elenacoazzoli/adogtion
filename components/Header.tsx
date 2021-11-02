@@ -85,7 +85,7 @@ const Header: FunctionComponent = () => {
     <HeaderStyled>
       <NavigationBar>
         <LogoContainer>
-          <Logo src="logo.svg" />
+          <Logo src="/icons/logo.svg" />
           <Link href="/" passHref>
             <LogoText>adogtion</LogoText>
           </Link>
