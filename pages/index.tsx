@@ -5,7 +5,7 @@ import React from 'react';
 import styled from 'styled-components';
 import DogInfoCard from '../components/DogInfoCard';
 import Layout from '../components/Layout';
-import { DogAndShelterType, getFirstFourDogs } from '../util/database';
+import { DogAndShelterType } from '../util/database';
 
 const BlobBackgroundImageLeft = styled.img`
   position: absolute;
@@ -38,14 +38,16 @@ const HeadingContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 0 32px 0 32px;
+  margin: 0 32px 0 -180px;
+  background-color: #faf7f6;
+  padding: 48px 72px 48px 48px;
 `;
 const H1Styled = styled.h1`
   font-family: 'Playfair Display', serif;
   color: #2f3b4d;
   font-weight: 900;
   font-size: 3rem;
-  margin: 16px 0 0 0;
+  margin: 0 0 0 0;
 `;
 
 const SubTitleStyled = styled.span`
@@ -164,8 +166,8 @@ function Home({ dogs }: HomeProps) {
       <FirstSectionStyled>
         <DogHugImage
           src="/siteimages/doghug.jpg"
-          width="320px"
-          height="480px"
+          width="600px"
+          height="500px"
         />
 
         <HeadingContainer>
@@ -238,8 +240,10 @@ function Home({ dogs }: HomeProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  // get data from db
-  const dogs = await getFirstFourDogs();
+  // get data from API
+  const baseUrl = process.env.BASE_URL;
+  const dogsResponse = await fetch(`${baseUrl}/api/dogs/filtered`);
+  const dogs = await dogsResponse.json();
   return {
     props: {
       dogs,

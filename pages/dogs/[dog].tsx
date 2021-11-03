@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
-import { DogAndShelterType, getOneDog } from '../../util/database';
+import { DogAndShelterType } from '../../util/database';
 
 const PageTitle = styled.h1`
   font-family: 'Playfair Display', serif;
@@ -37,10 +37,11 @@ function Dog({ individualDog }: DogsProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // get data from db
-  // later: get data from API
+  // get data from API
   const idFromUrl = Number(context.query.dog);
-  const individualDog = await getOneDog(idFromUrl);
+  const baseUrl = process.env.BASE_URL;
+  const dogResponse = await fetch(`${baseUrl}/api/dogs/${idFromUrl}`);
+  const individualDog = await dogResponse.json();
 
   return {
     props: {

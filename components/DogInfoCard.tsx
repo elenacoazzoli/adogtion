@@ -35,7 +35,7 @@ const DogInfoContainer = styled.div`
   width: 240px;
 `;
 
-const PastaImage = styled.img`
+const DogImage = styled.img`
   width: 240px;
   border-radius: 15px;
 `;
@@ -77,7 +77,7 @@ const DogInfoCard: FunctionComponent<DogInfoCardProps> = ({ dog }) => (
     <Link href={`/dogs/${dog.dogId}`} passHref>
       <DogCardLink aria-label={`Go to dog ${dog.dogName} page`}>
         <DogCardContainer>
-          <PastaImage
+          <DogImage
             alt={`picture of ${dog.dogName}`}
             src={`/dogsimages/${dog.image}`}
           />
