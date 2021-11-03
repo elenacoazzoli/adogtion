@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { FunctionComponent } from 'react';
 import styled from 'styled-components';
+import { DogAndShelterType } from '../util/database';
 
 const DogCardPlaceholder = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 32px;
   text-decoration: none;
 `;
 
@@ -34,7 +35,7 @@ const DogInfoContainer = styled.div`
   width: 240px;
 `;
 
-const PastaImage = styled.img`
+const DogImage = styled.img`
   width: 240px;
   border-radius: 15px;
 `;
@@ -67,16 +68,25 @@ const ShelterLocation = styled.span`
   margin-top: 8px;
 `;
 
-const DogInfoCard: FunctionComponent = () => (
+interface DogInfoCardProps {
+  dog: DogAndShelterType;
+}
+
+const DogInfoCard: FunctionComponent<DogInfoCardProps> = ({ dog }) => (
   <DogCardPlaceholder>
-    <Link href="/" passHref>
-      <DogCardLink aria-label={`Go to dog page`}>
+    <Link href={`/dogs/${dog.dogId}`} passHref>
+      <DogCardLink aria-label={`Go to dog ${dog.dogName} page`}>
         <DogCardContainer>
-          <PastaImage alt={`picture of`} src={`/dogs/gnocchi.jpg`} />
+          <DogImage
+            alt={`picture of ${dog.dogName}`}
+            src={`/dogsimages/${dog.image}`}
+          />
           <DogInfoContainer>
-            <DogName>Gnocchi</DogName>
-            <DogAgeGender>Young - Female</DogAgeGender>
-            <ShelterLocation>Wien, Happy House </ShelterLocation>
+            <DogName>{dog.dogName}</DogName>
+            <DogAgeGender>Young - {dog.gender}</DogAgeGender>
+            <ShelterLocation>
+              {dog.region}, {dog.shelterName}
+            </ShelterLocation>
           </DogInfoContainer>
         </DogCardContainer>
       </DogCardLink>

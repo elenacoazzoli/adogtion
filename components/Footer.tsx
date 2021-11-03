@@ -55,7 +55,7 @@ const Footer: FunctionComponent = () => (
         <div>
           <Link href="/" passHref>
             <a>
-              <Image src="/logo.svg" width="96px" height="96px" />
+              <Image src="/icons/logo.svg" width="96px" height="96px" />
             </a>
           </Link>
         </div>

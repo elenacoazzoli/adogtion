@@ -1,9 +1,11 @@
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
 import styled from 'styled-components';
 import DogInfoCard from '../components/DogInfoCard';
 import Layout from '../components/Layout';
+import { DogAndShelterType } from '../util/database';
 
 const BlobBackgroundImageLeft = styled.img`
   position: absolute;
@@ -36,14 +38,16 @@ const HeadingContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 0 32px 0 32px;
+  margin: 0 32px 0 -180px;
+  background-color: #faf7f6;
+  padding: 48px 72px 48px 48px;
 `;
 const H1Styled = styled.h1`
   font-family: 'Playfair Display', serif;
   color: #2f3b4d;
   font-weight: 900;
   font-size: 3rem;
-  margin: 16px 0 0 0;
+  margin: 0 0 0 0;
 `;
 
 const SubTitleStyled = styled.span`
@@ -55,12 +59,12 @@ const SubTitleStyled = styled.span`
   box-shadow: inset 0 -12px 0 #efd5d2;
 `;
 const LinkStyled = styled.a`
-  background-color: #2f3b4d;
+  background-color: #343f53;
   border: 2px solid transparent;
   text-decoration: underline 2px solid transparent;
   transition: 0.5s;
   text-align: center;
-  border-color: #2f3b4d;
+  border-color: #343f53;
   color: #fff;
   font-family: 'Montserrat', sans-serif;
   margin-top: 16px;
@@ -90,7 +94,7 @@ const H2Styled = styled.h2`
 
 const ParagraphStyled = styled.p`
   font-family: 'Montserrat', sans-serif;
-  color: #2f3b4d;
+  color: #343f53;
   font-weight: 300;
   font-size: 1rem;
   text-align: center;
@@ -134,7 +138,7 @@ const InfoCardStyled = styled.div`
 
 const H3Styled = styled.h3`
   font-family: 'Playfair Display', serif;
-  color: #2f3b4d;
+  color: #343f53;
   font-weight: 900;
   text-align: center;
 
@@ -142,7 +146,11 @@ const H3Styled = styled.h3`
   margin: 8px 0 0 0;
 `;
 
-function Home() {
+interface HomeProps {
+  dogs: DogAndShelterType[];
+}
+
+function Home({ dogs }: HomeProps) {
   return (
     <Layout>
       <Head>
@@ -151,12 +159,16 @@ function Home() {
           name="description"
           content="The platform to adopt your next dog"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/icons/logo.svg" />
       </Head>
       <BlobBackgroundImageLeft src="/shapes/shape3.svg" />
       <BlobBackgroundImageRight src="/shapes/shape1.svg" />
       <FirstSectionStyled>
-        <DogHugImage src="/doghug.jpg" width="320px" height="480px" />
+        <DogHugImage
+          src="/siteimages/doghug.jpg"
+          width="600px"
+          height="500px"
+        />
 
         <HeadingContainer>
           <H1Styled>Adopt a friend</H1Styled>
@@ -179,10 +191,9 @@ function Home() {
       <ThirdSectionStyled>
         <H2Styled>Dogs available for adoption</H2Styled>
         <InfoCardsContainer>
-          <DogInfoCard />
-          <DogInfoCard />
-          <DogInfoCard />
-          <DogInfoCard />
+          {dogs.map((dog: DogAndShelterType) => {
+            return <DogInfoCard dog={dog} key={dog.dogId} />;
+          })}
         </InfoCardsContainer>
         <Link href="/dogs" passHref>
           <LinkStyled>MEET THEM ALL</LinkStyled>
@@ -227,5 +238,17 @@ function Home() {
     </Layout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  // get data from API
+  const baseUrl = process.env.BASE_URL;
+  const dogsResponse = await fetch(`${baseUrl}/api/dogs/filtered`);
+  const dogs = await dogsResponse.json();
+  return {
+    props: {
+      dogs,
+    },
+  };
+};
 
 export default Home;
