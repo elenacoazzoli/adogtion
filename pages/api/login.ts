@@ -1,6 +1,13 @@
+import crypto from 'node:crypto';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getUserWithPasswordHash, User } from '../../util/database';
+import {
+  createSession,
+  deleteExpiredSessions,
+  getUserWithPasswordHash,
+  User,
+} from '../../util/database';
 import { verifyHashPassword } from '../../util/helpers/auth';
+import { createSerializedRegisterSessionTokenCookie } from '../../util/helpers/cookies';
 import { Errors } from '../../util/helpers/errors';
 
 export type LoginResponse = { errors: Errors } | { user: User };
@@ -20,7 +27,6 @@ export default async function loginHandler(
     return;
   }
 
-  // future to do: query first if username already exist and then send back error in case
   try {
     const username = req.body.username;
     const userWithPasswordHash = await getUserWithPasswordHash(username);
@@ -42,7 +48,7 @@ export default async function loginHandler(
       userWithPasswordHash.passwordHash,
     );
 
-    // password doesn't match to any hash in DB
+    // password doesn't match to hash in DB
     if (!isPasswordVerified) {
       res.status(401).send({
         errors: [
@@ -54,15 +60,24 @@ export default async function loginHandler(
       return;
     }
 
+    // clean old sessions
+    deleteExpiredSessions(userWithPasswordHash.id);
+
+    // create the token andd the user id to sessions
+    // 1. create the token
+    const token = crypto.randomBytes(64).toString('base64');
+
+    // 2. so a query to add a session record
+    const newSession = await createSession(token, userWithPasswordHash.id);
+    // set the response to create the cookie in the browser
+    const cookie = createSerializedRegisterSessionTokenCookie(newSession.token);
+
+    // removing password hash from the response
     const { passwordHash, ...user } = userWithPasswordHash;
-    res.send({ user: user });
+
+    // set Cookies from server side
+    res.status(200).setHeader('Set-Cookie', cookie).send({ user: user });
   } catch (err) {
-    res.status(500).send({
-      errors: [
-        {
-          message: 'Username already taken. Choose a different username',
-        },
-      ],
-    });
+    res.status(500).send({ errors: [{ message: (err as Error).message }] });
   }
 }

@@ -38,6 +38,13 @@ export type UserWithPasswordHash = User & {
   passwordHash: string;
 };
 
+export type Session = {
+  id: number;
+  token: string;
+  expiryTimestamp: Date;
+  userId: number;
+};
+
 // read the environment variables in the .env file to connect to Postgres
 dotenvSafe.config();
 
@@ -210,4 +217,29 @@ export async function getUserWithPasswordHash(username: string) {
   username= ${username};
   `;
   return user && camelcaseKeys(user);
+}
+
+export async function createSession(token: string, userId: number) {
+  const [session] = await sql<[Session]>`
+    INSERT INTO sessions
+      (token, user_id)
+    VALUES
+      (${token}, ${userId})
+    RETURNING
+      *
+  `;
+  return camelcaseKeys(session);
+}
+
+export async function deleteExpiredSessions(userId: number) {
+  const sessions = await sql<Session[]>`
+    DELETE FROM
+      sessions
+    WHERE
+      expiry_timestamp < NOW() AND
+      user_id = ${userId}
+    RETURNING
+      *
+  `;
+  return sessions.map((session) => camelcaseKeys(session));
 }
