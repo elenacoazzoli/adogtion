@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -10,7 +11,7 @@ import { DogAndShelterType } from '../util/database';
 const BlobBackgroundImageLeft = styled.img`
   position: absolute;
   top: 0px;
-  left: -240px;
+  left: -120px;
   z-index: -1;
   width: 840px;
 `;
@@ -244,6 +245,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const baseUrl = process.env.BASE_URL;
   const dogsResponse = await fetch(`${baseUrl}/api/dogs/filtered`);
   const dogs = await dogsResponse.json();
+  // const trialPass = await bcrypt.hash('admin', 10);
+  // const trialUserPass = await bcrypt.hash('user', 10);
+  // console.log(trialPass);
+  // console.log(trialUserPass);
+
   return {
     props: {
       dogs,

@@ -2,9 +2,9 @@ import { useRouter } from 'next/dist/client/router';
 import React, { useState } from 'react';
 import Layout from '../../components/Layout';
 import { Errors } from '../../util/helpers/errors';
-import { LoginResponse } from '../api/login';
+import { RegisterResponse } from '../api/register';
 
-function LoginPage() {
+function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Errors>([]);
@@ -12,13 +12,13 @@ function LoginPage() {
 
   return (
     <Layout>
-      <h1>Log into your Adogtion account</h1>
+      <h1>Create your Adogtion account</h1>
 
       <form
         onSubmit={async (event) => {
           event.preventDefault();
           // do something with the values
-          const loginResponse = await fetch('/api/login', {
+          const registerResponse = await fetch('/api/register', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -29,23 +29,24 @@ function LoginPage() {
               password: password,
             }),
           });
-          // casting of loginJson
-          const loginJson = (await loginResponse.json()) as LoginResponse;
+          // casting of registerJson
+          const registerJson =
+            (await registerResponse.json()) as RegisterResponse;
 
-          // if loginJson contains errors, setErrors
-          if ('errors' in loginJson) {
-            setErrors(loginJson.errors);
+          // if registerJson contains errors, setErrors
+          if ('errors' in registerJson) {
+            setErrors(registerJson.errors);
             return;
           }
 
-          const destination =
-            typeof router.query.returnTo === 'string' && router.query.returnTo
-              ? router.query.returnTo
-              : `/users/${loginJson.user.id}`;
+          // const destination =
+          //   typeof router.query.returnTo === 'string' && router.query.returnTo
+          //     ? router.query.returnTo
+          //     : `/users/${registerJson.user.id}`;
 
-          //  props.refreshUsername();
+          // props.refreshUsername();
 
-          router.push(destination);
+          // router.push(destination);
         }}
       >
         <label>
@@ -64,7 +65,7 @@ function LoginPage() {
           />
         </label>
 
-        <button>Login</button>
+        <button>Register</button>
       </form>
 
       <div>
@@ -72,9 +73,9 @@ function LoginPage() {
           <div key={`error-${error.message}`}>{error.message}</div>
         ))}
       </div>
-      <p>Don't have an account yet? Sign up</p>
+      <p>Already have an account? Log in</p>
     </Layout>
   );
 }
 
-export default LoginPage;
+export default RegisterPage;

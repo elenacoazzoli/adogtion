@@ -27,6 +27,17 @@ export type ShelterType = {
 
 export type DogAndShelterType = DogType & ShelterType;
 
+export type User = {
+  id: number;
+  username: string;
+  roleId: number;
+  shelterId: number | null;
+};
+
+export type UserWithPasswordHash = User & {
+  passwordHash: string;
+};
+
 // read the environment variables in the .env file to connect to Postgres
 dotenvSafe.config();
 
@@ -149,4 +160,54 @@ export async function getOneDog(id: number) {
       dogs.id = ${id};
   `;
   return camelcaseKeys(individualDog[0]);
+}
+
+export async function insertAdopterUser({
+  username,
+  passwordHash,
+}: {
+  username: string;
+  passwordHash: string;
+}) {
+  const [user] = await sql<[User]>`
+  INSERT INTO users
+  (username, password_hash, role_id)
+  VALUES
+  (${username}, ${passwordHash}, 1)
+  RETURNING
+  id,
+  username,
+  role_id,
+  shelter_id;
+  `;
+  return camelcaseKeys(user);
+}
+
+export async function getUser(id: number) {
+  const [user] = await sql<[User]>`
+  SELECT
+  id,
+  username,
+  role_id,
+  shelter_id
+  FROM users
+  WHERE
+  id= ${id};
+  `;
+  return camelcaseKeys(user);
+}
+
+export async function getUserWithPasswordHash(username: string) {
+  const [user] = await sql<[UserWithPasswordHash | undefined]>`
+  SELECT
+  id,
+  username,
+  password_hash,
+  role_id,
+  shelter_id
+  FROM users
+  WHERE
+  username= ${username};
+  `;
+  return user && camelcaseKeys(user);
 }
