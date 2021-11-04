@@ -1,11 +1,11 @@
-import bcrypt from 'bcrypt';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import DogInfoCard from '../components/DogInfoCard';
 import Layout from '../components/Layout';
+import { useUserName } from '../components/UsernameContext';
 import { DogAndShelterType } from '../util/database';
 
 const BlobBackgroundImageLeft = styled.img`
@@ -152,6 +152,8 @@ interface HomeProps {
 }
 
 function Home({ dogs }: HomeProps) {
+  const { username, refreshUsername } = useUserName();
+
   return (
     <Layout>
       <Head>
@@ -162,8 +164,10 @@ function Home({ dogs }: HomeProps) {
         />
         <link rel="icon" href="/icons/logo.svg" />
       </Head>
+
       <BlobBackgroundImageLeft src="/shapes/shape3.svg" />
       <BlobBackgroundImageRight src="/shapes/shape1.svg" />
+
       <FirstSectionStyled>
         <DogHugImage
           src="/siteimages/doghug.jpg"
@@ -184,7 +188,7 @@ function Home({ dogs }: HomeProps) {
         <ParagraphStyled>
           Answer a few quick questions to see your perfect matches on Adogtion.
         </ParagraphStyled>
-        <Link href="/login" passHref>
+        <Link href="/user/myprofile" passHref>
           {/* should lead to user profile, if session doesn't exist, redirectTo login or register */}
           <LinkStyled>GET STARTED</LinkStyled>
         </Link>
@@ -245,10 +249,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const baseUrl = process.env.BASE_URL;
   const dogsResponse = await fetch(`${baseUrl}/api/dogs/filtered`);
   const dogs = await dogsResponse.json();
-  // const trialPass = await bcrypt.hash('admin', 10);
-  // const trialUserPass = await bcrypt.hash('user', 10);
-  // console.log(trialPass);
-  // console.log(trialUserPass);
 
   return {
     props: {

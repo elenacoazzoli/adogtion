@@ -1,6 +1,7 @@
 import { useRouter } from 'next/dist/client/router';
 import React, { useState } from 'react';
 import Layout from '../../components/Layout';
+import { useUserName } from '../../components/UsernameContext';
 import { Errors } from '../../util/helpers/errors';
 import { RegisterResponse } from '../api/register';
 
@@ -9,6 +10,7 @@ function RegisterPage() {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Errors>([]);
   const router = useRouter();
+  const { refreshUsername } = useUserName();
 
   return (
     <Layout>
@@ -39,14 +41,14 @@ function RegisterPage() {
             return;
           }
 
-          // const destination =
-          //   typeof router.query.returnTo === 'string' && router.query.returnTo
-          //     ? router.query.returnTo
-          //     : `/users/${registerJson.user.id}`;
+          const destination =
+            typeof router.query.returnTo === 'string' && router.query.returnTo
+              ? router.query.returnTo
+              : `/user/myprofile`;
 
-          // props.refreshUsername();
+          refreshUsername();
 
-          // router.push(destination);
+          router.push(destination);
         }}
       >
         <label>

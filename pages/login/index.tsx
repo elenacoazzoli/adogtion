@@ -1,6 +1,7 @@
 import { useRouter } from 'next/dist/client/router';
 import React, { useState } from 'react';
 import Layout from '../../components/Layout';
+import { useUserName } from '../../components/UsernameContext';
 import { Errors } from '../../util/helpers/errors';
 import { LoginResponse } from '../api/login';
 
@@ -9,7 +10,7 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Errors>([]);
   const router = useRouter();
-
+  const { refreshUsername } = useUserName();
   return (
     <Layout>
       <h1>Log into your Adogtion account</h1>
@@ -41,9 +42,9 @@ function LoginPage() {
           const destination =
             typeof router.query.returnTo === 'string' && router.query.returnTo
               ? router.query.returnTo
-              : `/users/${loginJson.user.id}`;
+              : `/user/myprofile`;
 
-          //  props.refreshUsername();
+          refreshUsername();
 
           router.push(destination);
         }}
