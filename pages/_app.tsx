@@ -16,6 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     if ('errors' in profile) {
       console.log('error', profile.errors);
+      setUsername(undefined);
       return;
     }
     setUsername(profile.user.username);

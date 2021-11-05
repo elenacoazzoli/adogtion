@@ -1,16 +1,7 @@
 import { GetServerSidePropsContext } from 'next';
-import { useRouter } from 'next/dist/client/router';
-import { useUserName } from '../../components/UsernameContext';
 
 function Logout() {
-  const router = useRouter();
-  const { refreshUsername } = useUserName();
-  console.log('antes del refresh');
-  refreshUsername();
-  console.log('antes del push');
-  window.location.href = '/';
-  // router.push('/', undefined, { shallow: true });
-  return 'Logged out';
+  return 'You are logged out';
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -32,7 +23,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   return {
-    props: {},
+    redirect: {
+      destination: '/',
+      permanent: false,
+    },
   };
 }
 

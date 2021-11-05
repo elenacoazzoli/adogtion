@@ -125,9 +125,10 @@ const Header: FunctionComponent = () => {
                 <PageLink>{username}</PageLink>
               </Link>
               <Divider>|</Divider>
-              <Link href="/logout" passHref>
+              <PageLink href="/logout">Log out </PageLink>
+              {/* <Link href="/logout" passHref>
                 <PageLink>Log out</PageLink>
-              </Link>
+              </Link> */}
             </>
           )}
         </RegistrationContainer>
