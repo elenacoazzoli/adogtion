@@ -7,33 +7,34 @@ import styled from 'styled-components';
 import Layout from '../../components/Layout';
 import { useUserName } from '../../components/UsernameContext';
 import { Errors } from '../../util/helpers/errors';
-import { LoginResponse } from '../api/login';
+import { RegisterResponse } from '../api/register';
 
 const BlobBackgroundImageLeft = styled.img`
   position: absolute;
-  top: 100px;
-  left: -160px;
+  top: 0px;
+  left: -180px;
   z-index: -2;
   width: 840px;
 `;
 
-const DoodleImageLeft = styled.img`
+const DoodleImageRight = styled.img`
   position: absolute;
-  top: 320px;
-  left: 200px;
+  transform: rotate(-15deg);
+  top: 300px;
+  right: 100px;
   z-index: -1;
   width: 500px;
 `;
 
 const BlobBackgroundImageRight = styled.img`
   position: absolute;
-  top: 0px;
-  right: -160px;
-  z-index: -1;
+  top: 200px;
+  right: -200px;
+  z-index: -2;
   width: 740px;
 `;
 
-const LoginSectionStyled = styled.section`
+const RegisterSectionStyled = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -58,7 +59,7 @@ const H1Styled = styled.h1`
   box-shadow: inset 0 -16px 0 #efd5d2;
 `;
 
-const LoginSubTitleStyled = styled.span`
+const RegisterSubTitleStyled = styled.span`
   font-family: 'Montserrat', sans-serif;
   color: #2f3b4d;
   font-weight: 500;
@@ -67,7 +68,7 @@ const LoginSubTitleStyled = styled.span`
   text-align: center;
 `;
 
-const LoginFormContainer = styled.form`
+const RegisterFormContainer = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -144,41 +145,41 @@ const PageLink = styled.a`
   margin-left: 4px;
 `;
 
-interface LoginProps {
+interface RegisterProps {
   csrfToken: string;
 }
-function LoginPage({ csrfToken }: LoginProps) {
+
+function RegisterPage({ csrfToken }: RegisterProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Errors>([]);
   const router = useRouter();
   const { refreshUsername } = useUserName();
+
   return (
     <Layout>
       <Head>
         <title>Login</title>
-        <meta name="description" content="Login in to your profile" />
+        <meta name="description" content="Sign up and create a new profile" />
         <link rel="icon" href="/icons/logo.svg" />
       </Head>
 
       <BlobBackgroundImageLeft src="/shapes/shape3.svg" />
       <BlobBackgroundImageRight src="/shapes/shape1.svg" />
-      <DoodleImageLeft src="/shapes/PettingDoodle.svg" />
-
-      <LoginSectionStyled>
+      <DoodleImageRight src="/shapes/DogJumpDoodle.svg" />
+      <RegisterSectionStyled>
         <HeadingContainer>
-          <H1Styled>Login</H1Styled>
-          <LoginSubTitleStyled>
-            <b>Welcome back!</b> Please log in to access your Adogtion account
-            information.
-          </LoginSubTitleStyled>
+          <H1Styled>Create your account</H1Styled>
+          <RegisterSubTitleStyled>
+            <b>Welcome!</b> Register below and create your new Adogtion account.
+          </RegisterSubTitleStyled>
         </HeadingContainer>
 
-        <LoginFormContainer
+        <RegisterFormContainer
           onSubmit={async (event) => {
             event.preventDefault();
             // do something with the values
-            const loginResponse = await fetch('/api/login', {
+            const registerResponse = await fetch('/api/register', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -190,12 +191,13 @@ function LoginPage({ csrfToken }: LoginProps) {
                 csrfToken: csrfToken,
               }),
             });
-            // casting of loginJson
-            const loginJson = (await loginResponse.json()) as LoginResponse;
+            // casting of registerJson
+            const registerJson =
+              (await registerResponse.json()) as RegisterResponse;
 
-            // if loginJson contains errors, setErrors
-            if ('errors' in loginJson) {
-              setErrors(loginJson.errors);
+            // if registerJson contains errors, setErrors
+            if ('errors' in registerJson) {
+              setErrors(registerJson.errors);
               return;
             }
 
@@ -228,8 +230,9 @@ function LoginPage({ csrfToken }: LoginProps) {
               onChange={(event) => setPassword(event.currentTarget.value)}
             />
           </LabelsAndInputsContainer>
-          <ButtonStyled>Log in</ButtonStyled>
-        </LoginFormContainer>
+
+          <ButtonStyled>Register</ButtonStyled>
+        </RegisterFormContainer>
 
         <div>
           {errors.map((error) => (
@@ -237,12 +240,12 @@ function LoginPage({ csrfToken }: LoginProps) {
           ))}
         </div>
         <ParagraphStyled>
-          Don't have an account yet?
-          <Link href="/register" passHref>
-            <PageLink>Sign up</PageLink>
+          Already have an account?
+          <Link href="/login" passHref>
+            <PageLink>Log in</PageLink>
           </Link>
         </ParagraphStyled>
-      </LoginSectionStyled>
+      </RegisterSectionStyled>
     </Layout>
   );
 }
@@ -259,7 +262,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   ) {
     return {
       redirect: {
-        destination: `https://${context.req.headers.host}/login`,
+        destination: `https://${context.req.headers.host}/register`,
         permanent: true,
       },
     };
@@ -288,4 +291,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   };
 }
 
-export default LoginPage;
+export default RegisterPage;

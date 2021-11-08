@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { FunctionComponent } from 'react';
 import styled from 'styled-components';
+import { useUserName } from './UsernameContext';
 
 const HeaderStyled = styled.header`
   position: fixed;
@@ -81,6 +82,7 @@ const Divider = styled.span`
 `;
 
 const Header: FunctionComponent = () => {
+  const { username } = useUserName();
   return (
     <HeaderStyled>
       <NavigationBar>
@@ -102,19 +104,33 @@ const Header: FunctionComponent = () => {
           </Link>
         </Pages>
         <RegistrationContainer>
-          <Link href="/favourites" passHref>
+          <Link href="/user/myfavourites" passHref>
             {/* should lead to user profile, if session doesn't exist, redirectTo login or register */}
             <FavouritesIcon src="/icons/heart.svg" alt="Favourites icon" />
           </Link>
           <Divider>|</Divider>
-          {/* conditional rendering: if user is logged in, show username - otherwise display two links */}
-          <Link href="/register" passHref>
-            <PageLink>Sign up</PageLink>
-          </Link>
-          <Divider>|</Divider>
-          <Link href="/login" passHref>
-            <PageLink>Log in</PageLink>
-          </Link>
+          {!username ? (
+            <>
+              <Link href="/register" passHref>
+                <PageLink>Sign up</PageLink>
+              </Link>
+              <Divider>|</Divider>
+              <Link href="/login" passHref>
+                <PageLink>Log in</PageLink>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/user/myprofile" passHref>
+                <PageLink>{username}</PageLink>
+              </Link>
+              <Divider>|</Divider>
+              <PageLink href="/logout">Log out </PageLink>
+              {/* <Link href="/logout" passHref>
+                <PageLink>Log out</PageLink>
+              </Link> */}
+            </>
+          )}
         </RegistrationContainer>
       </NavigationBar>
     </HeaderStyled>

@@ -1,16 +1,16 @@
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import React from 'react';
 import styled from 'styled-components';
 import DogInfoCard from '../components/DogInfoCard';
 import Layout from '../components/Layout';
+import { useUserName } from '../components/UsernameContext';
 import { DogAndShelterType } from '../util/database';
 
 const BlobBackgroundImageLeft = styled.img`
   position: absolute;
   top: 0px;
-  left: -240px;
+  left: -120px;
   z-index: -1;
   width: 840px;
 `;
@@ -151,6 +151,8 @@ interface HomeProps {
 }
 
 function Home({ dogs }: HomeProps) {
+  const { username, refreshUsername } = useUserName();
+
   return (
     <Layout>
       <Head>
@@ -161,8 +163,10 @@ function Home({ dogs }: HomeProps) {
         />
         <link rel="icon" href="/icons/logo.svg" />
       </Head>
+
       <BlobBackgroundImageLeft src="/shapes/shape3.svg" />
       <BlobBackgroundImageRight src="/shapes/shape1.svg" />
+
       <FirstSectionStyled>
         <DogHugImage
           src="/siteimages/doghug.jpg"
@@ -183,7 +187,7 @@ function Home({ dogs }: HomeProps) {
         <ParagraphStyled>
           Answer a few quick questions to see your perfect matches on Adogtion.
         </ParagraphStyled>
-        <Link href="/login" passHref>
+        <Link href="/user/myprofile" passHref>
           {/* should lead to user profile, if session doesn't exist, redirectTo login or register */}
           <LinkStyled>GET STARTED</LinkStyled>
         </Link>
@@ -244,6 +248,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const baseUrl = process.env.BASE_URL;
   const dogsResponse = await fetch(`${baseUrl}/api/dogs/filtered`);
   const dogs = await dogsResponse.json();
+
   return {
     props: {
       dogs,
