@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FunctionComponent, useContext } from 'react';
+import { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { useUserName } from './UsernameContext';
 

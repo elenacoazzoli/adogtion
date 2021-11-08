@@ -260,6 +260,24 @@ export async function getValidSessionByToken(token: string) {
   return session && camelcaseKeys(session);
 }
 
+export async function getUserBySessionToken(sessionToken: string | undefined) {
+  if (!sessionToken) return undefined;
+  const [user] = await sql<[User | undefined]>`
+    SELECT
+      users.id,
+      users.username,
+      users.role_id,
+      users.shelter_id
+    FROM
+      sessions,
+      users
+    WHERE
+      sessions.token = ${sessionToken} AND
+      sessions.user_id = users.id
+  `;
+  return user && camelcaseKeys(user);
+}
+
 export async function deleteSessionByToken(token: string) {
   const sessions = await sql<Session[]>`
     DELETE FROM

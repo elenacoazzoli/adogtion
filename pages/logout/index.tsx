@@ -1,4 +1,5 @@
 import { GetServerSidePropsContext } from 'next';
+import { deleteSessionByToken } from '../../util/database';
 
 function Logout() {
   return 'You are logged out';
@@ -11,7 +12,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   if (sessionToken) {
     // fetch an api route called logout
-    await fetch(`${process.env.BASE_URL}/api/logout`);
+    await deleteSessionByToken(sessionToken);
+
+    // await fetch(`${process.env.BASE_URL}/api/logout`, {
+    //   method: 'GET',
+    //   headers: {
+    //     cookie: sessionToken,
+    //   },
+    //   credentials: 'include',
+    // });
 
     context.res.setHeader(
       'Set-Cookie',

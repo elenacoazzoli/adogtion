@@ -8,14 +8,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [username, setUsername] = useState<string | undefined>();
 
   const refreshUsername = useCallback(async () => {
-    console.log('callback');
     const response = await fetch('/api/profile');
     const profile = await response.json();
 
-    console.log('user received', profile);
-
     if ('errors' in profile) {
-      console.log('error', profile.errors);
       setUsername(undefined);
       return;
     }
@@ -23,7 +19,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   useEffect(() => {
-    console.log('estoy funcionando');
     refreshUsername();
   }, [refreshUsername]);
 

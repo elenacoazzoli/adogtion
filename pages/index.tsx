@@ -1,7 +1,6 @@
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import React, { useState } from 'react';
 import styled from 'styled-components';
 import DogInfoCard from '../components/DogInfoCard';
 import Layout from '../components/Layout';
