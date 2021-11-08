@@ -169,6 +169,31 @@ export async function getOneDog(id: number) {
   return camelcaseKeys(individualDog[0]);
 }
 
+export async function getDogsByShelterId(id: number) {
+  const dogsOfShelter = await sql<DogType[]>`
+    SELECT
+      dogs.id AS dog_id,
+      dogs.dog_name,
+      dogs.dog_description,
+      dogs.age,
+      dogs.gender,
+      dogs.size,
+      dogs.activity_level,
+      dogs.kids,
+      dogs.pets,
+      dogs.service,
+      dogs.image
+     FROM
+      dogs
+     WHERE
+      dogs.shelter = ${id}
+  `;
+  return dogsOfShelter.map((onedog) => {
+    // Convert snake case to camelCase
+    return camelcaseKeys(onedog);
+  });
+}
+
 export async function insertAdopterUser({
   username,
   passwordHash,
@@ -288,4 +313,22 @@ export async function deleteSessionByToken(token: string) {
       *
   `;
   return sessions.map((session) => camelcaseKeys(session))[0];
+}
+
+export async function getShelterById(shelterId: number | undefined) {
+  if (!shelterId) return undefined;
+  const [shelter] = await sql<[ShelterType | undefined]>`
+    SELECT
+      shelters.id,
+      shelters.shelter_name,
+      shelters.shelter_description,
+      shelters.address,
+      shelters.region,
+      shelters.phone
+    FROM
+      shelters
+    WHERE
+      shelters.id = ${shelterId}
+  `;
+  return shelter && camelcaseKeys(shelter);
 }

@@ -6,6 +6,7 @@ import UsernameContext from '../components/UsernameContext';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [username, setUsername] = useState<string | undefined>();
+  const [role, setRole] = useState<number | undefined>();
 
   const refreshUsername = useCallback(async () => {
     const response = await fetch('/api/profile');
@@ -13,9 +14,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     if ('errors' in profile) {
       setUsername(undefined);
+      setRole(undefined);
       return;
     }
     setUsername(profile.user.username);
+    setRole(profile.user.roleId);
   }, []);
 
   useEffect(() => {
@@ -26,6 +29,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <UsernameContext.Provider
       value={{
         username,
+        role,
         refreshUsername,
       }}
     >

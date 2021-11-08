@@ -82,7 +82,7 @@ const Divider = styled.span`
 `;
 
 const Header: FunctionComponent = () => {
-  const { username } = useUserName();
+  const { username, role } = useUserName();
   return (
     <HeaderStyled>
       <NavigationBar>
@@ -121,6 +121,14 @@ const Header: FunctionComponent = () => {
             </>
           ) : (
             <>
+              {role === 2 && (
+                <>
+                  <Link href="/user/myshelter" passHref>
+                    <PageLink>admin</PageLink>
+                  </Link>
+                  <Divider>|</Divider>
+                </>
+              )}
               <Link href="/user/myprofile" passHref>
                 <PageLink>{username}</PageLink>
               </Link>
