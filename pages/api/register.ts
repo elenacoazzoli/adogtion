@@ -8,6 +8,7 @@ import {
 } from '../../util/database';
 import { hashPassword } from '../../util/helpers/auth';
 import { createSerializedRegisterSessionTokenCookie } from '../../util/helpers/cookies';
+import { verifyCsrfToken } from '../../util/helpers/csrf';
 import { Errors } from '../../util/helpers/errors';
 
 export type RegisterResponse = { errors: Errors } | { user: User };
@@ -22,6 +23,17 @@ export default async function registerHandler(
         {
           message:
             'Your registration does not contain any username or password',
+        },
+      ],
+    });
+    return;
+  }
+
+  if (!req.body.csrfToken || !verifyCsrfToken(req.body.csrfToken)) {
+    res.status(400).send({
+      errors: [
+        {
+          message: 'Request does not contain valid csrf token',
         },
       ],
     });

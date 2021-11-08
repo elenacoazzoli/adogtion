@@ -8,6 +8,7 @@ import {
 } from '../../util/database';
 import { verifyHashPassword } from '../../util/helpers/auth';
 import { createSerializedRegisterSessionTokenCookie } from '../../util/helpers/cookies';
+import { verifyCsrfToken } from '../../util/helpers/csrf';
 import { Errors } from '../../util/helpers/errors';
 
 export type LoginResponse = { errors: Errors } | { user: User };
@@ -21,6 +22,17 @@ export default async function loginHandler(
       errors: [
         {
           message: 'Your login does not contain any username or password',
+        },
+      ],
+    });
+    return;
+  }
+
+  if (!req.body.csrfToken || !verifyCsrfToken(req.body.csrfToken)) {
+    res.status(400).send({
+      errors: [
+        {
+          message: 'Request does not contain valid csrf token',
         },
       ],
     });
