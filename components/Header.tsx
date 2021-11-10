@@ -44,7 +44,7 @@ const Pages = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 72px;
+  gap: 36px;
 `;
 
 const PageLink = styled.a`

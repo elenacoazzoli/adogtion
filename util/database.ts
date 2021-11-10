@@ -319,7 +319,7 @@ export async function getShelterById(shelterId: number | undefined) {
   if (!shelterId) return undefined;
   const [shelter] = await sql<[ShelterType | undefined]>`
     SELECT
-      shelters.id,
+      shelters.id AS shelter_id,
       shelters.shelter_name,
       shelters.shelter_description,
       shelters.address,
@@ -331,4 +331,40 @@ export async function getShelterById(shelterId: number | undefined) {
       shelters.id = ${shelterId}
   `;
   return shelter && camelcaseKeys(shelter);
+}
+
+export async function updateShelterById(
+  shelterId: number,
+  shelterName: string,
+  description: string,
+  address: string,
+  region: string,
+  phone: string,
+) {
+  if (!shelterId) return undefined;
+  const [shelter] = await sql<[ShelterType | undefined]>`
+  UPDATE shelters
+    SET
+      shelter_name = ${shelterName},
+      shelter_description = ${description},
+      address = ${address},
+      region = ${region},
+      phone = ${phone}
+    WHERE
+      id = ${shelterId}
+    RETURNING *
+  `;
+  return shelter && camelcaseKeys(shelter);
+}
+
+export async function deleteDogById(dogId: number) {
+  const dogs = await sql<DogType[]>`
+    DELETE FROM
+      dogs
+    WHERE
+      id = ${dogId}
+    RETURNING
+      *
+  `;
+  return dogs.map((dog) => camelcaseKeys(dog))[0];
 }

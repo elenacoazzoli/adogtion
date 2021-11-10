@@ -219,7 +219,7 @@ function LoginPage({ csrfToken }: LoginProps) {
             />
           </LabelsAndInputsContainer>
           <LabelsAndInputsContainer>
-            <LabelStyled htmlFor="passowrd">Password</LabelStyled>
+            <LabelStyled htmlFor="password">Password</LabelStyled>
             <InputStyled
               id="password"
               required
