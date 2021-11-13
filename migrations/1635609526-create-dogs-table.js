@@ -14,7 +14,7 @@ exports.up = async function up(sql) {
 			pets boolean NOT NULL,
 			shelter integer REFERENCES shelters(id) ON DELETE CASCADE NOT NULL,
 			service boolean NOT NULL,
-			image varchar(50)
+			image varchar(200)
     );
   `;
 };

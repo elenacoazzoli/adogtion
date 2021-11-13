@@ -368,3 +368,48 @@ export async function deleteDogById(dogId: number) {
   `;
   return dogs.map((dog) => camelcaseKeys(dog))[0];
 }
+
+export async function insertNewDog({
+  dogName,
+  description,
+  age,
+  gender,
+  size,
+  activityLevel,
+  kids,
+  pets,
+  shelter,
+  service,
+  image,
+}: {
+  dogName: string;
+  description: string;
+  age: number;
+  gender: string;
+  size: number;
+  activityLevel: string;
+  kids: boolean;
+  pets: boolean;
+  shelter: number;
+  service: boolean;
+  image: string;
+}) {
+  const [dog] = await sql<[DogType | undefined]>`
+    INSERT INTO dogs
+    (dog_name, dog_description, age, gender, size, activity_level, kids, pets, shelter, service, image)
+    VALUES
+    (${dogName}, ${description}, ${age}, ${gender}, ${size}, ${activityLevel}, ${kids}, ${pets}, ${shelter}, ${service}, ${image})
+    RETURNING
+    id,
+    dog_name,
+    dog_description,
+    age,
+    gender,
+    activity_level,
+    kids,
+    pets,
+    service,
+    image;
+    `;
+  return dog && camelcaseKeys(dog);
+}

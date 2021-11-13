@@ -77,10 +77,7 @@ const DogInfoCard: FunctionComponent<DogInfoCardProps> = ({ dog }) => (
     <Link href={`/dogs/${dog.dogId}`} passHref>
       <DogCardLink aria-label={`Go to dog ${dog.dogName} page`}>
         <DogCardContainer>
-          <DogImage
-            alt={`picture of ${dog.dogName}`}
-            src={`/dogsimages/${dog.image}`}
-          />
+          <DogImage alt={`picture of ${dog.dogName}`} src={dog.image} />
           <DogInfoContainer>
             <DogName>{dog.dogName}</DogName>
             <DogAgeGender>Young - {dog.gender}</DogAgeGender>

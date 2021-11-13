@@ -10,7 +10,8 @@ const dogs = [
     pets: true,
     shelter: 2,
     service: false,
-    image: 'gnocchi.jpg',
+    image:
+      'https://res.cloudinary.com/adogtion/image/upload/v1636642357/pexels-helena-lopes-2253275_3_copy_ljdunt.jpg',
   },
   {
     dog_name: 'Pancino',
@@ -23,7 +24,8 @@ const dogs = [
     pets: false,
     shelter: 1,
     service: false,
-    image: 'pancino.jpg',
+    image:
+      'https://res.cloudinary.com/adogtion/image/upload/v1636642490/pexels-laura-stanley-3090875_1_copy_e9lswn.jpg',
   },
   {
     dog_name: 'Bark Twain',
@@ -36,7 +38,8 @@ const dogs = [
     pets: true,
     shelter: 4,
     service: false,
-    image: 'barktwain.jpg',
+    image:
+      'https://res.cloudinary.com/adogtion/image/upload/v1636642587/pexels-8734665_copy_gmouzi.jpg',
   },
   {
     dog_name: 'Karl Barx',
@@ -49,7 +52,8 @@ const dogs = [
     pets: false,
     shelter: 5,
     service: false,
-    image: 'karlbarx.jpg',
+    image:
+      'https://res.cloudinary.com/adogtion/image/upload/v1636642597/pexels-melchor-gama-668004_copy_ju2oiz.jpg',
   },
   {
     dog_name: 'Virginia Woof',
@@ -62,7 +66,8 @@ const dogs = [
     pets: true,
     shelter: 3,
     service: false,
-    image: 'virginiawoof.jpg',
+    image:
+      'https://res.cloudinary.com/adogtion/image/upload/v1636643351/pexels-helena-lopes-4453072_uegxbm.jpg',
   },
   {
     dog_name: 'Oreo',
@@ -75,7 +80,8 @@ const dogs = [
     pets: true,
     shelter: 5,
     service: false,
-    image: 'oreo.jpg',
+    image:
+      'https://res.cloudinary.com/adogtion/image/upload/v1636642463/pexels-charles-1851164_copy_ib0ypk.jpg',
   },
   {
     dog_name: 'Camilla',
@@ -88,7 +94,8 @@ const dogs = [
     pets: true,
     shelter: 2,
     service: false,
-    image: 'camilla.jpg',
+    image:
+      'https://res.cloudinary.com/adogtion/image/upload/v1636642512/pexels-dominika-roseclay-2679612_copy_vnio78.jpg',
   },
   {
     dog_name: 'Pedro',
@@ -101,7 +108,8 @@ const dogs = [
     pets: true,
     shelter: 4,
     service: false,
-    image: 'pedro.jpg',
+    image:
+      'https://res.cloudinary.com/adogtion/image/upload/v1636642577/pexels-pixabay-164186_copy_hnplwg.jpg',
   },
   {
     dog_name: 'Carlo Alberto',
@@ -114,7 +122,8 @@ const dogs = [
     pets: true,
     shelter: 3,
     service: false,
-    image: 'carloalberto.jpg',
+    image:
+      'https://res.cloudinary.com/adogtion/image/upload/v1636642567/pexels-greta-hoffman-7728103_copy_fknvii.jpg',
   },
   {
     dog_name: 'Furdinand',
@@ -127,7 +136,8 @@ const dogs = [
     pets: true,
     shelter: 1,
     service: false,
-    image: 'furdinand.jpg',
+    image:
+      'https://res.cloudinary.com/adogtion/image/upload/v1636642559/pexels-maud-slaats-2326936_copy_ibswjp.jpg',
   },
 ];
 
