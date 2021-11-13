@@ -17,10 +17,18 @@ const BlobBackgroundImageLeft = styled.img`
 
 const BlobBackgroundImageRight = styled.img`
   position: absolute;
-  top: 1300px;
+  top: 1100px;
   right: -240px;
   z-index: -1;
   width: 840px;
+`;
+
+const DoodleImageRight = styled.img`
+  position: absolute;
+  top: 1600px;
+  right: 240px;
+  z-index: -1;
+  width: 350px;
 `;
 
 const FirstSectionStyled = styled.section`
@@ -114,7 +122,7 @@ const FourthSectionStyled = styled.section`
   flex-direction: column;
   align-items: center;
   padding: 0 64px;
-  margin-top: 32px;
+  margin-top: 64px;
 `;
 
 const InfoCardsContainer = styled.div`
@@ -166,6 +174,7 @@ function Home({ dogs }: HomeProps) {
 
       <BlobBackgroundImageLeft src="/shapes/shape3.svg" />
       <BlobBackgroundImageRight src="/shapes/shape1.svg" />
+      <DoodleImageRight src="/shapes/DoogieDoodle.svg" />
 
       <FirstSectionStyled>
         <DogHugImage

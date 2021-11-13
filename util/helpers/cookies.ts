@@ -7,7 +7,7 @@ export function createSerializedRegisterSessionTokenCookie(token: string) {
   // Save the token in a cookie on the user's side
   // (cookies get sent automatically to the server every time
   // a user makes a request)
-  const maxAge = 60 * 5; // 5 minutes
+  const maxAge = 60 * 60; // one hour
 
   return serialize('sessionToken', token, {
     maxAge: maxAge,

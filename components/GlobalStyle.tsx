@@ -13,6 +13,10 @@ const globalStyle = createGlobalStyle`
     font-feature-settings:'tnum';
     font-variant-numeric: tabular-nums;
   }
+
+  html{
+    scroll-behavior: smooth;
+  }
 `;
 
 export default globalStyle;

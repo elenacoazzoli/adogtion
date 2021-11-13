@@ -169,6 +169,31 @@ export async function getOneDog(id: number) {
   return camelcaseKeys(individualDog[0]);
 }
 
+export async function getDogsByShelterId(id: number) {
+  const dogsOfShelter = await sql<DogType[]>`
+    SELECT
+      dogs.id AS dog_id,
+      dogs.dog_name,
+      dogs.dog_description,
+      dogs.age,
+      dogs.gender,
+      dogs.size,
+      dogs.activity_level,
+      dogs.kids,
+      dogs.pets,
+      dogs.service,
+      dogs.image
+     FROM
+      dogs
+     WHERE
+      dogs.shelter = ${id}
+  `;
+  return dogsOfShelter.map((onedog) => {
+    // Convert snake case to camelCase
+    return camelcaseKeys(onedog);
+  });
+}
+
 export async function insertAdopterUser({
   username,
   passwordHash,
@@ -288,4 +313,103 @@ export async function deleteSessionByToken(token: string) {
       *
   `;
   return sessions.map((session) => camelcaseKeys(session))[0];
+}
+
+export async function getShelterById(shelterId: number | undefined) {
+  if (!shelterId) return undefined;
+  const [shelter] = await sql<[ShelterType | undefined]>`
+    SELECT
+      shelters.id AS shelter_id,
+      shelters.shelter_name,
+      shelters.shelter_description,
+      shelters.address,
+      shelters.region,
+      shelters.phone
+    FROM
+      shelters
+    WHERE
+      shelters.id = ${shelterId}
+  `;
+  return shelter && camelcaseKeys(shelter);
+}
+
+export async function updateShelterById(
+  shelterId: number,
+  shelterName: string,
+  description: string,
+  address: string,
+  region: string,
+  phone: string,
+) {
+  if (!shelterId) return undefined;
+  const [shelter] = await sql<[ShelterType | undefined]>`
+  UPDATE shelters
+    SET
+      shelter_name = ${shelterName},
+      shelter_description = ${description},
+      address = ${address},
+      region = ${region},
+      phone = ${phone}
+    WHERE
+      id = ${shelterId}
+    RETURNING *
+  `;
+  return shelter && camelcaseKeys(shelter);
+}
+
+export async function deleteDogById(dogId: number) {
+  const dogs = await sql<DogType[]>`
+    DELETE FROM
+      dogs
+    WHERE
+      id = ${dogId}
+    RETURNING
+      *
+  `;
+  return dogs.map((dog) => camelcaseKeys(dog))[0];
+}
+
+export async function insertNewDog({
+  dogName,
+  description,
+  age,
+  gender,
+  size,
+  activityLevel,
+  kids,
+  pets,
+  shelter,
+  service,
+  image,
+}: {
+  dogName: string;
+  description: string;
+  age: number;
+  gender: string;
+  size: number;
+  activityLevel: string;
+  kids: boolean;
+  pets: boolean;
+  shelter: number;
+  service: boolean;
+  image: string;
+}) {
+  const [dog] = await sql<[DogType | undefined]>`
+    INSERT INTO dogs
+    (dog_name, dog_description, age, gender, size, activity_level, kids, pets, shelter, service, image)
+    VALUES
+    (${dogName}, ${description}, ${age}, ${gender}, ${size}, ${activityLevel}, ${kids}, ${pets}, ${shelter}, ${service}, ${image})
+    RETURNING
+    id,
+    dog_name,
+    dog_description,
+    age,
+    gender,
+    activity_level,
+    kids,
+    pets,
+    service,
+    image;
+    `;
+  return dog && camelcaseKeys(dog);
 }
