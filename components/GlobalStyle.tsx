@@ -14,7 +14,7 @@ const globalStyle = createGlobalStyle`
     font-variant-numeric: tabular-nums;
   }
 
-  html{
+  main{
     scroll-behavior: smooth;
   }
 `;

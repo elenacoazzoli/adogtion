@@ -1,16 +1,47 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import styled from 'styled-components';
+import DogDescriptionInfo from '../../components/DogDescriptionInfo';
 import Layout from '../../components/Layout';
 import { DogAndShelterType } from '../../util/database';
 
+const HeadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 16px;
+`;
 const PageTitle = styled.h1`
   font-family: 'Playfair Display', serif;
   color: #343f53;
   font-weight: 900;
   font-size: 3rem;
   text-align: center;
-  margin: 16px 0 0 0;
+  margin: 8px 0 0 0;
+`;
+const GenderAndAgeContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 36px;
+  margin-top: 12px;
+`;
+const Divider = styled.span`
+  margin: 4px;
+  font-family: 'Montserrat', sans-serif;
+  color: #343f53;
+  font-weight: 500;
+  font-size: 1rem;
+`;
+
+const ParagraphStyled = styled.p`
+  font-family: 'Montserrat', sans-serif;
+  color: #343f53;
+  font-weight: 500;
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 4px 0 0 0;
 `;
 
 interface DogsProps {
@@ -22,16 +53,39 @@ function Dog({ individualDog }: DogsProps) {
     <Layout>
       <Head>
         <title>{individualDog.dogName}</title>
-        <meta name="description" content="Dogs available for adoption" />
+        <meta name="description" content="Dog available for adoption" />
         <link rel="icon" href="/icons/logo.svg" />
       </Head>
+      <HeadingContainer>
+        <PageTitle>Hi, I am {individualDog.dogName}</PageTitle>
+        <GenderAndAgeContainer>
+          <ParagraphStyled>{individualDog.gender}</ParagraphStyled>
+          <Divider>|</Divider>
 
-      <PageTitle>Page of {individualDog.dogName}</PageTitle>
-      <div>
-        <p>{individualDog.gender}</p>
-        <p>{individualDog.kids}</p>
-        <p>{individualDog.shelterName}</p>
-      </div>
+          <ParagraphStyled>{individualDog.age} years old</ParagraphStyled>
+        </GenderAndAgeContainer>
+      </HeadingContainer>
+      <DogDescriptionInfo dog={individualDog} />
+      <section>
+        <h2>Here are gifts you can buy to support {individualDog.dogName}</h2>
+        <div>
+          <div>
+            <img alt="bowl of dog food" src="/icons/bowl.png" />
+            <span>Buy food and health supplies</span>
+            <button>Buy food</button>
+          </div>
+          <div>
+            <img alt="dog toys" src="/icons/toy.png" />
+            <span>Get toys and bedding</span>
+            <button>Buy toys</button>
+          </div>
+          <div>
+            <img alt="bowl of dog food" src="/icons/vet.png" />
+            <span>Support necessary vet visits and health checks</span>
+            <button>Buy a vet visit</button>
+          </div>
+        </div>
+      </section>
     </Layout>
   );
 }
