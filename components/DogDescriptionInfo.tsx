@@ -124,7 +124,7 @@ const ButtonStyled = styled.button`
   color: #fff;
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
-  padding: 12px 12px;
+  padding: 6px 12px;
   border-radius: 12px;
   width: 100%;
   cursor: pointer;
@@ -133,11 +133,20 @@ const ButtonStyled = styled.button`
   }
 `;
 
+const FavouriteIcon = styled.img`
+  width: 24px;
+  padding-top: 4px;
+`;
+
 interface DogDescriptionInfoProps {
   dog: DogAndShelterType;
+  favouriteClickHandler: () => Promise<void>;
+  favouriteToggle: boolean;
 }
 const DogDescriptionInfo: FunctionComponent<DogDescriptionInfoProps> = ({
   dog,
+  favouriteClickHandler,
+  favouriteToggle,
 }) => {
   return (
     <>
@@ -171,7 +180,30 @@ const DogDescriptionInfo: FunctionComponent<DogDescriptionInfoProps> = ({
             <ParagraphStyled>{dog.size} kgs</ParagraphStyled>
           </DescriptionRows>
           <ButtonsContainer>
-            <ButtonStyled>Favorite</ButtonStyled>
+            <ButtonStyled
+              aria-label={
+                favouriteToggle
+                  ? 'remove dog from favourites'
+                  : 'add dog to favourites'
+              }
+              onClick={() => {
+                favouriteClickHandler();
+              }}
+            >
+              {favouriteToggle ? (
+                <FavouriteIcon
+                  aria-hidden="true"
+                  alt=""
+                  src="/icons/favouriteFull.png"
+                />
+              ) : (
+                <FavouriteIcon
+                  aria-hidden="true"
+                  alt=""
+                  src="/icons/favouriteEmpty.png"
+                />
+              )}
+            </ButtonStyled>
             <ButtonStyled>Adopt me</ButtonStyled>
             <ButtonStyled>Sponsor me</ButtonStyled>
           </ButtonsContainer>

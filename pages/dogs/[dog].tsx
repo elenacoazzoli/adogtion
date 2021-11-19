@@ -1,9 +1,13 @@
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head';
+import { useState } from 'react';
 import styled from 'styled-components';
 import DogDescriptionInfo from '../../components/DogDescriptionInfo';
 import Layout from '../../components/Layout';
-import { DogAndShelterType } from '../../util/database';
+import { DogAndShelterType, User } from '../../util/database';
+import { Errors } from '../../util/helpers/errors';
+import { InsertFavouriteDogResponse } from '../api/favourites/add';
 
 const HeadingContainer = styled.div`
   display: flex;
@@ -46,9 +50,71 @@ const ParagraphStyled = styled.p`
 
 interface DogsProps {
   individualDog: DogAndShelterType;
+  allowedUser: User | null;
+  isFavourite: boolean;
 }
 
-function Dog({ individualDog }: DogsProps) {
+function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
+  const [favouriteToggle, setFavouriteToggle] = useState(isFavourite);
+  const router = useRouter();
+  const [errors, setErrors] = useState<Errors>([]);
+
+  async function favouriteClickHandler() {
+    // check if user is logged in? and then return to dog
+    if (allowedUser === null) {
+      const destination =
+        typeof router.query.returnTo === 'string' && router.query.returnTo
+          ? router.query.returnTo
+          : `/login?returnTo=/dogs/${individualDog.dogId}`;
+      router.push(destination);
+      // call API with delete or post to add or remove favourite passing the user id and dog id
+      // set FavouriteToogle to
+    } else {
+      if (favouriteToggle) {
+        const unfavouriteResponse = await fetch('/api/favourites/remove', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // this body will be the res.body of the API route
+          body: JSON.stringify({
+            dogId: individualDog.dogId,
+            userId: allowedUser.id,
+          }),
+        });
+
+        const unfavouriteJson = await unfavouriteResponse.json();
+
+        // if contains errors, setErrors
+        if ('errors' in unfavouriteJson) {
+          setErrors(unfavouriteJson.errors);
+          return;
+        }
+        setFavouriteToggle(false);
+      } else {
+        const favouriteResponse = await fetch('/api/favourites/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // this body will be the res.body of the API route
+          body: JSON.stringify({
+            dogId: individualDog.dogId,
+            userId: allowedUser.id,
+          }),
+        });
+        const favouriteJson =
+          (await favouriteResponse.json()) as InsertFavouriteDogResponse;
+        // if contains errors, setErrors
+        if ('errors' in favouriteJson) {
+          setErrors(favouriteJson.errors);
+          return;
+        }
+        setFavouriteToggle(true);
+      }
+    }
+  }
+
   return (
     <Layout>
       <Head>
@@ -65,7 +131,12 @@ function Dog({ individualDog }: DogsProps) {
           <ParagraphStyled>{individualDog.age} years old</ParagraphStyled>
         </GenderAndAgeContainer>
       </HeadingContainer>
-      <DogDescriptionInfo dog={individualDog} />
+
+      <DogDescriptionInfo
+        dog={individualDog}
+        favouriteClickHandler={favouriteClickHandler}
+        favouriteToggle={favouriteToggle}
+      />
       <section>
         <h2>Here are gifts you can buy to support {individualDog.dogName}</h2>
         <div>
@@ -97,9 +168,39 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const dogResponse = await fetch(`${baseUrl}/api/dogs/${idFromUrl}`);
   const individualDog = await dogResponse.json();
 
+  const { getUserBySessionToken } = await import('../../util/database');
+
+  // get user information if a session exists
+  const allowedUser = await getUserBySessionToken(
+    context.req.cookies.sessionToken,
+  );
+
+  let isFavourite = false;
+  // if the user has a started session, get the information about dog favourites
+  if (allowedUser) {
+    const isFavouriteResponse = await fetch(`${baseUrl}/api/favourites/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // this body will be the res.body of the API route
+      body: JSON.stringify({
+        dogId: individualDog.dogId,
+        userId: allowedUser.id,
+      }),
+    });
+    const favouriteDog = await isFavouriteResponse.json();
+
+    if (favouriteDog.favouriteDog) {
+      isFavourite = true;
+    }
+  }
+
   return {
     props: {
       individualDog,
+      allowedUser: allowedUser ? allowedUser : null,
+      isFavourite,
     },
   };
 };
