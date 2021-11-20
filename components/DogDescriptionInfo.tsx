@@ -133,6 +133,26 @@ const ButtonStyled = styled.button`
   }
 `;
 
+const LinkStyled = styled.a`
+  background-color: #343f53;
+  border: 2px solid transparent;
+  text-decoration: underline 2px solid transparent;
+  transition: 0.5s;
+  text-align: center;
+  font-size: 1rem;
+  border-color: #343f53;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  padding: 12px 12px;
+  border-radius: 12px;
+  width: 100%;
+  cursor: pointer;
+  :hover {
+    text-decoration: underline 2px solid #efd5d2;
+  }
+`;
+
 const FavouriteIcon = styled.img`
   width: 24px;
   padding-top: 4px;
@@ -204,8 +224,8 @@ const DogDescriptionInfo: FunctionComponent<DogDescriptionInfoProps> = ({
                 />
               )}
             </ButtonStyled>
-            <ButtonStyled>Adopt me</ButtonStyled>
-            <ButtonStyled>Sponsor me</ButtonStyled>
+            <LinkStyled href="#sponsor">Sponsor me</LinkStyled>
+            <LinkStyled href="#adopt">Adopt me</LinkStyled>
           </ButtonsContainer>
         </DogInfoContainer>
       </DogContainer>

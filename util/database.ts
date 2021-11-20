@@ -479,3 +479,36 @@ export async function deleteFavouriteDog({
   `;
   return favourites.map((favourite) => camelcaseKeys(favourite))[0];
 }
+
+export async function getAllFavouriteDogsByUserId(userId: number) {
+  const dogs = await sql<DogAndShelterType[]>`
+    SELECT
+      dogs.id AS dog_id,
+      dogs.dog_name,
+      dogs.dog_description,
+      dogs.age,
+      dogs.gender,
+      dogs.size,
+      dogs.activity_level,
+      dogs.kids,
+      dogs.pets,
+      dogs.service,
+      dogs.image,
+      shelters.id AS shelter_id,
+      shelters.shelter_name,
+      shelters.shelter_description,
+      shelters.address,
+      shelters.region,
+      shelters.phone
+     FROM
+      dogs, shelters, favourites
+     WHERE
+      dogs.shelter = shelters.id AND
+      dogs.id = favourites.dog_id AND
+      favourites.user_id = ${userId};
+  `;
+  return dogs.map((dog) => {
+    // Convert snake case to camelCase
+    return camelcaseKeys(dog);
+  });
+}

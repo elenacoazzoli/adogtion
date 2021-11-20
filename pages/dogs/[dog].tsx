@@ -48,6 +48,177 @@ const ParagraphStyled = styled.p`
   margin: 4px 0 0 0;
 `;
 
+const H2Styled = styled.h2`
+  font-family: 'Playfair Display', serif;
+  color: #343f53;
+  font-weight: 900;
+  font-size: 2rem;
+  text-align: center;
+  margin: 8px 0 0 0;
+`;
+
+const SponsorSectionStyled = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 64px;
+  margin-top: 64px;
+`;
+
+const SponsorGiftsContainer = styled.div`
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  margin: 32px 0 0 0;
+`;
+
+const SponsorGiftStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  width: 300px;
+  margin: 0 48px 0 48px;
+  padding: 32px 16px 32px 16px;
+  border: 2px solid #dfe3e9;
+  border-radius: 16px;
+`;
+
+const GiftIcon = styled.img`
+  width: 120px;
+`;
+
+const PriceStyled = styled.span`
+  font-family: 'Playfair Display', serif;
+  color: #343f53;
+  font-weight: 800;
+  font-size: 2rem;
+  text-align: center;
+`;
+
+const ButtonStyled = styled.button`
+  background-color: #343f53;
+  border: 2px solid transparent;
+  text-decoration: underline 2px solid transparent;
+  transition: 0.5s;
+  text-align: center;
+  font-size: 1rem;
+  border-color: #343f53;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  padding: 6px 24px;
+  margin-top: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  :hover {
+    text-decoration: underline 2px solid #efd5d2;
+  }
+`;
+
+const AdoptionSectionStyled = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 64px;
+  margin-top: 64px;
+`;
+
+const AdoptionContainer = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 32px 64px;
+  width: 100%;
+`;
+
+const DoodleImage = styled.img`
+  width: 350px;
+`;
+
+const ContactForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 32px;
+  margin: 16px;
+  width: 60%;
+  background-color: #dfe3e9;
+  border-radius: 15px;
+`;
+
+const LabelsAndInputsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  justify-content: center;
+  margin-top: 8px;
+`;
+
+const LabelsAndInputsContainerHorizontal = styled.div`
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  gap: 16px;
+  margin-top: 16px;
+`;
+
+const LabelStyled = styled.label`
+  margin: 4px 0 4px 0;
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  color: #2f3b4d;
+`;
+
+const InputStyled = styled.input`
+  width: 100%;
+  min-height: 36px;
+  padding: 4px 8px;
+  border: 2px solid #dfe3e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 300;
+  font-family: 'Montserrat', sans-serif;
+  color: #2f3b4d;
+`;
+
+const TextAreaStyled = styled.textarea`
+  width: 100%;
+  min-height: 32px;
+  resize: none;
+  padding: 4px 8px;
+  border: 2px solid #dfe3e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 300;
+  font-family: 'Montserrat', sans-serif;
+  color: #2f3b4d;
+`;
+
+const AdoptButtonStyled = styled.button`
+  background-color: #343f53;
+  border: 2px solid transparent;
+  text-decoration: underline 2px solid transparent;
+  transition: 0.5s;
+  text-align: center;
+  font-size: 1rem;
+  border-color: #343f53;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  padding: 6px 12px;
+  margin-top: 24px;
+  border-radius: 12px;
+  width: 50%;
+  cursor: pointer;
+  :hover {
+    text-decoration: underline 2px solid #efd5d2;
+  }
+`;
+
 interface DogsProps {
   individualDog: DogAndShelterType;
   allowedUser: User | null;
@@ -137,26 +308,84 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
         favouriteClickHandler={favouriteClickHandler}
         favouriteToggle={favouriteToggle}
       />
-      <section>
-        <h2>Here are gifts you can buy to support {individualDog.dogName}</h2>
-        <div>
-          <div>
-            <img alt="bowl of dog food" src="/icons/bowl.png" />
-            <span>Buy food and health supplies</span>
-            <button>Buy food</button>
-          </div>
-          <div>
-            <img alt="dog toys" src="/icons/toy.png" />
-            <span>Get toys and bedding</span>
-            <button>Buy toys</button>
-          </div>
-          <div>
-            <img alt="bowl of dog food" src="/icons/vet.png" />
-            <span>Support necessary vet visits and health checks</span>
-            <button>Buy a vet visit</button>
-          </div>
-        </div>
-      </section>
+      <SponsorSectionStyled>
+        <H2Styled id="sponsor">
+          Here are gifts you can buy to support {individualDog.dogName}
+        </H2Styled>
+        <ParagraphStyled>
+          Dogs from our shelters are well looked after, because we care for them
+          like our own. You can choose to sponsor some of the dogs we care for.
+          Help us cover the costs for food, cozy blankets for the cold winter or
+          their regular vet checks.
+        </ParagraphStyled>
+        <SponsorGiftsContainer>
+          <SponsorGiftStyled>
+            <GiftIcon alt="bowl of dog food" src="/icons/bowl.png" />
+            <PriceStyled>€ 10</PriceStyled>
+            <ParagraphStyled>Buy food and health supplies</ParagraphStyled>
+            <ButtonStyled>Buy food</ButtonStyled>
+          </SponsorGiftStyled>
+          <SponsorGiftStyled>
+            <GiftIcon alt="dog toys" src="/icons/toy.png" />
+            <PriceStyled>€ 25</PriceStyled>
+            <ParagraphStyled>Get toys and bedding</ParagraphStyled>
+            <ButtonStyled>Buy toys</ButtonStyled>
+          </SponsorGiftStyled>
+          <SponsorGiftStyled>
+            <GiftIcon alt="bowl of dog food" src="/icons/vet.png" />
+            <PriceStyled>€ 50</PriceStyled>
+            <ParagraphStyled>Vet visits and health checks</ParagraphStyled>
+            <ButtonStyled>Buy a vet visit</ButtonStyled>
+          </SponsorGiftStyled>
+        </SponsorGiftsContainer>
+      </SponsorSectionStyled>
+      <AdoptionSectionStyled>
+        <H2Styled id="adopt">
+          Find out how you can adopt {individualDog.dogName}
+        </H2Styled>
+        <AdoptionContainer>
+          <DoodleImage
+            alt="dog playing with owner"
+            src="/shapes/DoogieDoodle.svg"
+          />
+          <ContactForm
+            onSubmit={(event) => {
+              event.preventDefault();
+            }}
+          >
+            <ParagraphStyled>
+              Write a message to the shelter {individualDog.shelterName}
+            </ParagraphStyled>
+            <LabelsAndInputsContainerHorizontal>
+              <LabelsAndInputsContainer>
+                <LabelStyled htmlFor="name">Name</LabelStyled>
+                <InputStyled id="name" name="name" required />
+              </LabelsAndInputsContainer>
+              <LabelsAndInputsContainer>
+                <LabelStyled htmlFor="surname">Last name</LabelStyled>
+                <InputStyled id="surname" name="surname" required />
+              </LabelsAndInputsContainer>
+            </LabelsAndInputsContainerHorizontal>
+            <LabelsAndInputsContainer>
+              <LabelStyled htmlFor="email">Email</LabelStyled>
+              <InputStyled id="email" name="email" required />
+            </LabelsAndInputsContainer>
+            <LabelsAndInputsContainer>
+              <LabelStyled htmlFor="message">
+                Message for the shelter
+              </LabelStyled>
+              <TextAreaStyled
+                id="message"
+                name="message"
+                required
+                max-length="500"
+                rows={3}
+              />
+            </LabelsAndInputsContainer>
+            <AdoptButtonStyled>ADOPT ME</AdoptButtonStyled>
+          </ContactForm>
+        </AdoptionContainer>
+      </AdoptionSectionStyled>
     </Layout>
   );
 }

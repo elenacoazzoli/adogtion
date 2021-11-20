@@ -202,6 +202,8 @@ function LoginPage({ csrfToken }: LoginProps) {
             const destination =
               typeof router.query.returnTo === 'string' && router.query.returnTo
                 ? router.query.returnTo
+                : loginJson.user.roleId === 2
+                ? `/user/myshelter`
                 : `/user/myprofile`;
 
             refreshUsername();

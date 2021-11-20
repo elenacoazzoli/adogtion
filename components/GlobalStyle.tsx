@@ -14,9 +14,11 @@ const globalStyle = createGlobalStyle`
     font-variant-numeric: tabular-nums;
   }
 
-  main{
+  html{
     scroll-behavior: smooth;
   }
+
+
 `;
 
 export default globalStyle;
