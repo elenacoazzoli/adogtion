@@ -45,6 +45,12 @@ export type Session = {
   userId: number;
 };
 
+export type Favourite = {
+  favouriteId: number;
+  userId: number;
+  dogId: number;
+};
+
 // read the environment variables in the .env file to connect to Postgres
 dotenvSafe.config();
 
@@ -412,4 +418,97 @@ export async function insertNewDog({
     image;
     `;
   return dog && camelcaseKeys(dog);
+}
+
+export async function getFavouriteById({
+  dogId,
+  userId,
+}: {
+  dogId: number;
+  userId: number;
+}) {
+  const [favouriteDog] = await sql<[Favourite | undefined]>`
+    SELECT
+      favourites.id AS favourite_id,
+      favourites.dog_id,
+      favourites.user_id
+    FROM
+      favourites
+    WHERE
+    favourites.user_id = ${userId} AND
+    favourites.dog_id = ${dogId};
+  `;
+  return favouriteDog && camelcaseKeys(favouriteDog);
+}
+
+export async function insertFavouriteDog({
+  dogId,
+  userId,
+}: {
+  dogId: number;
+  userId: number;
+}) {
+  const [favouriteDog] = await sql<[Favourite]>`
+  INSERT INTO favourites
+  (user_id, dog_id)
+  VALUES
+  (${userId}, ${dogId})
+  RETURNING
+  id AS favourite_id,
+  user_id,
+  dog_id;
+  `;
+  return camelcaseKeys(favouriteDog);
+}
+
+export async function deleteFavouriteDog({
+  dogId,
+  userId,
+}: {
+  dogId: number;
+  userId: number;
+}) {
+  const favourites = await sql<Favourite[]>`
+    DELETE FROM
+    favourites
+    WHERE
+    dog_id = ${dogId} AND
+    user_id = ${userId}
+    RETURNING
+      *
+  `;
+  return favourites.map((favourite) => camelcaseKeys(favourite))[0];
+}
+
+export async function getAllFavouriteDogsByUserId(userId: number) {
+  const dogs = await sql<DogAndShelterType[]>`
+    SELECT
+      dogs.id AS dog_id,
+      dogs.dog_name,
+      dogs.dog_description,
+      dogs.age,
+      dogs.gender,
+      dogs.size,
+      dogs.activity_level,
+      dogs.kids,
+      dogs.pets,
+      dogs.service,
+      dogs.image,
+      shelters.id AS shelter_id,
+      shelters.shelter_name,
+      shelters.shelter_description,
+      shelters.address,
+      shelters.region,
+      shelters.phone
+     FROM
+      dogs, shelters, favourites
+     WHERE
+      dogs.shelter = shelters.id AND
+      dogs.id = favourites.dog_id AND
+      favourites.user_id = ${userId};
+  `;
+  return dogs.map((dog) => {
+    // Convert snake case to camelCase
+    return camelcaseKeys(dog);
+  });
 }
