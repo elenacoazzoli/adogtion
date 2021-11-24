@@ -32,10 +32,27 @@ export type User = {
   username: string;
   roleId: number;
   shelterId: number | null;
+  name?: string;
+  surname?: string;
+  email?: string;
+  age?: string;
+  gender?: string;
+  size?: string;
+  activityLevel?: string;
+  kids?: boolean;
+  pets?: boolean;
+  service?: boolean;
 };
 
 export type UserWithPasswordHash = User & {
   passwordHash: string;
+};
+
+export type UserProfile = {
+  id: number;
+  username: string;
+  roleId: number;
+  shelterId: number | null;
 };
 
 export type Session = {
@@ -221,6 +238,54 @@ export async function insertAdopterUser({
   return camelcaseKeys(user);
 }
 
+export async function insertProfileInfo({
+  email,
+  name,
+  surname,
+  userId,
+}: {
+  email: string;
+  name: string;
+  surname: string;
+  userId: number;
+}) {
+  const [profile] = await sql<[]>`
+  INSERT INTO profiles
+  (user_id, email, name, surname)
+  VALUES
+  (${userId}, ${email}, ${name}, ${surname})
+  RETURNING
+  *
+  `;
+  return camelcaseKeys(profile);
+}
+
+export async function getProfileInfoByUserId(id: number) {
+  const [user] = await sql<[User]>`
+  SELECT
+  users.id,
+  users.username,
+  users.role_id,
+  users.shelter_id,
+  profiles.name,
+  profiles.surname,
+  profiles.email,
+  profiles.gender,
+  profiles.age,
+  profiles.size,
+  profiles.activity_level,
+  profiles.kids,
+  profiles.pets,
+  profiles.service
+  FROM
+  users, profiles
+  WHERE
+  users.id= ${id} AND
+  profiles.user_id = users.id;
+  `;
+  return camelcaseKeys(user);
+}
+
 export async function getUser(id: number) {
   const [user] = await sql<[User]>`
   SELECT
@@ -248,6 +313,26 @@ export async function getUserWithPasswordHash(username: string) {
   username= ${username};
   `;
   return user && camelcaseKeys(user);
+}
+
+export async function updateProfileInfoById(
+  userId: number,
+  name: string,
+  surname: string,
+  email: string,
+) {
+  if (!userId) return undefined;
+  const [profile] = await sql<[User | undefined]>`
+  UPDATE profiles
+    SET
+      name = ${name},
+      surname = ${surname},
+      email = ${email}
+    WHERE
+      user_id = ${userId}
+    RETURNING *
+  `;
+  return profile && camelcaseKeys(profile);
 }
 
 export async function createSession(token: string, userId: number) {

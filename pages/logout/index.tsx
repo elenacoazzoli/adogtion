@@ -17,7 +17,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // await fetch(`${process.env.BASE_URL}/api/logout`, {
     //   method: 'GET',
     //   headers: {
-    //     cookie: sessionToken,
+    //    cookie: `sessionToken=${sessionToken}`,
     //   },
     //   credentials: 'include',
     // });

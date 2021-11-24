@@ -4,7 +4,6 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import DogInfoCard from '../components/DogInfoCard';
 import Layout from '../components/Layout';
-import { useUserName } from '../components/UsernameContext';
 import { DogAndShelterType } from '../util/database';
 
 const BlobBackgroundImageLeft = styled.img`
@@ -159,8 +158,6 @@ interface HomeProps {
 }
 
 function Home({ dogs }: HomeProps) {
-  const { username, refreshUsername } = useUserName();
-
   return (
     <Layout>
       <Head>
