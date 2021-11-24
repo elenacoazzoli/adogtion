@@ -320,6 +320,13 @@ export async function updateProfileInfoById(
   name: string,
   surname: string,
   email: string,
+  age: string,
+  gender: string,
+  size: string,
+  activityLevel: string,
+  kids: boolean,
+  pets: boolean,
+  service: boolean,
 ) {
   if (!userId) return undefined;
   const [profile] = await sql<[User | undefined]>`
@@ -327,7 +334,14 @@ export async function updateProfileInfoById(
     SET
       name = ${name},
       surname = ${surname},
-      email = ${email}
+      email = ${email},
+      gender = ${gender},
+      size= ${size},
+      age= ${age},
+      activity_level= ${activityLevel},
+      kids= ${kids},
+      pets=  ${pets},
+      service= ${service}
     WHERE
       user_id = ${userId}
     RETURNING *

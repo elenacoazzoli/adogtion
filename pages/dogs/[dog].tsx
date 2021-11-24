@@ -308,6 +308,11 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
         favouriteClickHandler={favouriteClickHandler}
         favouriteToggle={favouriteToggle}
       />
+      <div>
+        {errors.map((error) => (
+          <div key={`error-${error.message}`}>{error.message}</div>
+        ))}
+      </div>
       <SponsorSectionStyled>
         <H2Styled id="sponsor">
           Here are gifts you can buy to support {individualDog.dogName}

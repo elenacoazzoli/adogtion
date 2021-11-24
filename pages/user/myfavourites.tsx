@@ -222,6 +222,11 @@ function Favourites({ favouriteDogs, userId }: FavouritesProps) {
           <ContinueLink>Discover more dogs</ContinueLink>
         </Link>
       </ActionsContainer>
+      <div>
+        {errors.map((error) => (
+          <div key={`error-${error.message}`}>{error.message}</div>
+        ))}
+      </div>
     </Layout>
   );
 }
