@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import Layout from '../../components/Layout';
 import { User } from '../../util/database';
 import { Errors } from '../../util/helpers/errors';
-import { UpdateAdopterResponse } from '../api/user/about';
+import { AdopterResponse } from '../api/user/[userId]';
 
 const HeadingContainer = styled.div`
   display: flex;
@@ -247,8 +247,6 @@ interface UserProfileProps {
 function UserProfile({ user, profile }: UserProfileProps) {
   const [errors, setErrors] = useState<Errors>([]);
   const router = useRouter();
-
-  console.log(profile);
   return (
     <Layout>
       <Head>
@@ -273,14 +271,13 @@ function UserProfile({ user, profile }: UserProfileProps) {
         onSubmit={async (event) => {
           event.preventDefault();
           // do something with the values
-          const updateAboutResponse = await fetch('/api/user/about', {
+          await fetch(`/api/user/${user.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
             },
             // this body will be the res.body of the API route
             body: JSON.stringify({
-              userId: user.id,
               name: event.currentTarget.firstname.value,
               surname: event.currentTarget.surname.value,
               email: event.currentTarget.email.value,
@@ -299,22 +296,22 @@ function UserProfile({ user, profile }: UserProfileProps) {
               activityLevel:
                 event.currentTarget.activity.value === 'NULL'
                   ? null
-                  : event.currentTarget.activityLevel.value,
+                  : event.currentTarget.activity.value,
               kids: event.currentTarget.kids.checked,
               pets: event.currentTarget.pets.checked,
               service: event.currentTarget.service.checked,
             }),
-          });
-          // casting of loginJson
-          const updateAboutJson =
-            (await updateAboutResponse.json()) as UpdateAdopterResponse;
+          }).then(async (response) => {
+            // casting of loginJson
+            const updateAboutJson = (await response.json()) as AdopterResponse;
 
-          // if updateAboutJson contains errors, setErrors
-          if ('errors' in updateAboutJson) {
-            setErrors(updateAboutJson.errors);
-            return;
-          }
-          router.reload();
+            // if updateAboutJson contains errors, setErrors
+            if ('errors' in updateAboutJson) {
+              setErrors(updateAboutJson.errors);
+              return;
+            }
+            router.reload();
+          });
         }}
       >
         <H2Styled>My profile</H2Styled>
@@ -508,13 +505,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const profileResponse = await fetch(`${baseUrl}/api/user/${allowedUser.id}`);
   const profileInfo = await profileResponse.json();
 
-  console.log(profileInfo);
-
   // TODO: put here gSSP code for getting profile data and return props
   return {
     props: {
       user: allowedUser,
-      profile: profileInfo,
+      profile: profileInfo.profile,
     },
   };
 }

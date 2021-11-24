@@ -148,17 +148,15 @@ function Favourites({ favouriteDogs, userId }: FavouritesProps) {
       );
 
       // update database
-      const unfavouriteResponse = await fetch('/api/favourites/remove', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
+      const unfavouriteResponse = await fetch(
+        `/api/user/${userId}/favourites/${deletedDog.dogId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-        // this body will be the res.body of the API route
-        body: JSON.stringify({
-          dogId: deletedDog.dogId,
-          userId: userId,
-        }),
-      });
+      );
       const unfavouriteJson = await unfavouriteResponse.json();
 
       // if contains errors, setErrors
@@ -251,16 +249,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
   // put here gSSP code for getting favourite dogs and return props
-  const favouritesResponse = await fetch(`${baseUrl}/api/favourites/user`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    // this body will be the res.body of the API route
-    body: JSON.stringify({
-      userId: session.userId,
-    }),
-  });
+  const favouritesResponse = await fetch(
+    `${baseUrl}/api/user/${session.userId}/favourites`,
+  );
   const favouriteDogs = await favouritesResponse.json();
 
   return {

@@ -1,17 +1,24 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { updateProfileInfoById, User } from '../../../util/database';
-import { Errors } from '../../../util/helpers/errors';
+import {
+  getProfileInfoByUserId,
+  updateProfileInfoById,
+  User,
+} from '../../../../util/database';
+import { Errors } from '../../../../util/helpers/errors';
 
-export type UpdateAdopterResponse = { errors: Errors } | { profile: User };
+export type AdopterResponse = { errors: Errors } | { profile: User };
 
-export default async function updateHandler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<UpdateAdopterResponse>,
+  res: NextApiResponse<AdopterResponse>,
 ) {
-  if (req.method === 'PUT') {
-    console.log(req.body);
+  if (req.method === 'GET') {
+    const profileInfo = await getProfileInfoByUserId(Number(req.query.userId));
+    return res.status(200).send({ profile: profileInfo });
+  } else if (req.method === 'PUT') {
+    console.log('put body', req.body);
     const updatedProfileInfo = await updateProfileInfoById(
-      req.body.userId,
+      Number(req.query.userId),
       req.body.name,
       req.body.surname,
       req.body.email,

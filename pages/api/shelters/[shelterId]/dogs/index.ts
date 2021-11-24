@@ -1,6 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { DogType, insertNewDog } from '../../../../util/database';
-import { Errors } from '../../../../util/helpers/errors';
+import {
+  DogType,
+  getDogsByShelterId,
+  insertNewDog,
+} from '../../../../../util/database';
+import { Errors } from '../../../../../util/helpers/errors';
 
 export type InsertDogResponse =
   | { errors: Errors }
@@ -10,7 +14,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method === 'POST') {
+  if (req.method === 'GET') {
+    const shelterDogs = await getDogsByShelterId(Number(req.query.shelterId));
+
+    res.status(200).json(shelterDogs);
+  } else if (req.method === 'POST') {
     try {
       const insertedDog = await insertNewDog({
         dogName: req.body.dogName,

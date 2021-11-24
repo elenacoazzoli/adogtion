@@ -7,7 +7,7 @@ import DogDescriptionInfo from '../../components/DogDescriptionInfo';
 import Layout from '../../components/Layout';
 import { DogAndShelterType, User } from '../../util/database';
 import { Errors } from '../../util/helpers/errors';
-import { InsertFavouriteDogResponse } from '../api/favourites/add';
+import { FavouriteDogResponse } from '../api/user/[userId]/favourites/[dogId]';
 
 const HeadingContainer = styled.div`
   display: flex;
@@ -242,17 +242,15 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
       // set FavouriteToogle to
     } else {
       if (favouriteToggle) {
-        const unfavouriteResponse = await fetch('/api/favourites/remove', {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
+        const unfavouriteResponse = await fetch(
+          `/api/user/${allowedUser.id}/favourites/${individualDog.dogId}`,
+          {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
           },
-          // this body will be the res.body of the API route
-          body: JSON.stringify({
-            dogId: individualDog.dogId,
-            userId: allowedUser.id,
-          }),
-        });
+        );
 
         const unfavouriteJson = await unfavouriteResponse.json();
 
@@ -263,19 +261,17 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
         }
         setFavouriteToggle(false);
       } else {
-        const favouriteResponse = await fetch('/api/favourites/add', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const favouriteResponse = await fetch(
+          `/api/user/${allowedUser.id}/favourites/${individualDog.dogId}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
           },
-          // this body will be the res.body of the API route
-          body: JSON.stringify({
-            dogId: individualDog.dogId,
-            userId: allowedUser.id,
-          }),
-        });
+        );
         const favouriteJson =
-          (await favouriteResponse.json()) as InsertFavouriteDogResponse;
+          (await favouriteResponse.json()) as FavouriteDogResponse;
         // if contains errors, setErrors
         if ('errors' in favouriteJson) {
           setErrors(favouriteJson.errors);
@@ -412,17 +408,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let isFavourite = false;
   // if the user has a started session, get the information about dog favourites
   if (allowedUser) {
-    const isFavouriteResponse = await fetch(`${baseUrl}/api/favourites/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      // this body will be the res.body of the API route
-      body: JSON.stringify({
-        dogId: individualDog.dogId,
-        userId: allowedUser.id,
-      }),
-    });
+    const isFavouriteResponse = await fetch(
+      `${baseUrl}/api/user/${allowedUser.id}/favourites/${individualDog.dogId}`,
+    );
     const favouriteDog = await isFavouriteResponse.json();
 
     if (favouriteDog.favouriteDog) {

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { deleteDogById } from '../../../../util/database';
+import { deleteDogById } from '../../../../../util/database';
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,7 +7,10 @@ export default async function handler(
 ) {
   if (req.method === 'DELETE') {
     try {
-      const deletedDogs = await deleteDogById(req.body.dogId);
+      const deletedDogs = await deleteDogById(
+        Number(req.query.dogId),
+        Number(req.query.shelterId),
+      );
       res.status(200).json(deletedDogs);
     } catch {
       res.status(404).send({

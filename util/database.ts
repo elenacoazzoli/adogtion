@@ -462,12 +462,13 @@ export async function updateShelterById(
   return shelter && camelcaseKeys(shelter);
 }
 
-export async function deleteDogById(dogId: number) {
+export async function deleteDogById(dogId: number, shelterId: number) {
   const dogs = await sql<DogType[]>`
     DELETE FROM
       dogs
     WHERE
-      id = ${dogId}
+      id = ${dogId} AND
+      shelter = ${shelterId}
     RETURNING
       *
   `;
