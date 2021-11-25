@@ -781,15 +781,28 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
+  const sessionToken = context.req.cookies.sessionToken;
   const baseUrl = process.env.BASE_URL;
   const dogsResponse = await fetch(
     `${baseUrl}/api/shelters/${allowedUser.shelterId}/dogs`,
+    {
+      method: 'GET',
+      headers: {
+        cookie: `sessionToken=${sessionToken}`,
+      },
+    },
   );
 
   const shelterDogs = await dogsResponse.json();
 
   const infoResponse = await fetch(
     `${baseUrl}/api/shelters/${allowedUser.shelterId}`,
+    {
+      method: 'GET',
+      headers: {
+        cookie: `sessionToken=${sessionToken}`,
+      },
+    },
   );
 
   const shelterInfo = await infoResponse.json();

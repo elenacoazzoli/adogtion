@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getAllFavouriteDogsByUserId } from '../../../../../util/database';
+import {
+  getAllFavouriteDogsByUserId,
+  getUserBySessionToken,
+} from '../../../../../util/database';
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,11 +10,21 @@ export default async function handler(
 ) {
   if (req.method === 'GET') {
     try {
-      const favouriteDogs = await getAllFavouriteDogsByUserId(
-        Number(req.query.userId),
-      );
+      await getUserBySessionToken(req.cookies.sessionToken).then(
+        async (response) => {
+          if (response && response.id === Number(req.query.userId)) {
+            const favouriteDogs = await getAllFavouriteDogsByUserId(
+              Number(req.query.userId),
+            );
 
-      return res.status(200).send({ favouriteDogs: favouriteDogs });
+            return res.status(200).send({ favouriteDogs: favouriteDogs });
+          } else {
+            return res.status(401).send({
+              errors: [{ message: 'Not allowed' }],
+            });
+          }
+        },
+      );
     } catch {
       res.status(404).send({
         errors: [{ message: 'Some problems occured with your favourite' }],

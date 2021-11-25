@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { deleteDogById } from '../../../../../util/database';
+import {
+  deleteDogById,
+  getUserBySessionToken,
+} from '../../../../../util/database';
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,14 +10,28 @@ export default async function handler(
 ) {
   if (req.method === 'DELETE') {
     try {
-      const deletedDogs = await deleteDogById(
-        Number(req.query.dogId),
-        Number(req.query.shelterId),
+      await getUserBySessionToken(req.cookies.sessionToken).then(
+        async (response) => {
+          if (
+            response &&
+            response.roleId === 2 &&
+            response.shelterId === Number(req.query.shelterId)
+          ) {
+            const deletedDogs = await deleteDogById(
+              Number(req.query.dogId),
+              Number(req.query.shelterId),
+            );
+            res.status(200).json(deletedDogs);
+          } else {
+            return res.status(401).send({
+              errors: [{ message: 'Not allowed' }],
+            });
+          }
+        },
       );
-      res.status(200).json(deletedDogs);
     } catch {
       res.status(404).send({
-        errors: [{ message: 'Dog not found' }],
+        errors: [{ message: 'Not found' }],
       });
       return;
     }

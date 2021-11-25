@@ -251,6 +251,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // put here gSSP code for getting favourite dogs and return props
   const favouritesResponse = await fetch(
     `${baseUrl}/api/user/${session.userId}/favourites`,
+    {
+      method: 'GET',
+      headers: {
+        cookie: `sessionToken=${sessionToken}`,
+      },
+    },
   );
   const favouriteDogs = await favouritesResponse.json();
 

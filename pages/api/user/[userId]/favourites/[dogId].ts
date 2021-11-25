@@ -3,6 +3,7 @@ import {
   deleteFavouriteDog,
   Favourite,
   getFavouriteById,
+  getUserBySessionToken,
   insertFavouriteDog,
 } from '../../../../../util/database';
 import { Errors } from '../../../../../util/helpers/errors';
@@ -17,23 +18,33 @@ export default async function handler(
 ) {
   if (req.method === 'GET') {
     try {
-      const favouriteDog = await getFavouriteById({
-        dogId: Number(req.query.dogId),
-        userId: Number(req.query.userId),
-      });
+      await getUserBySessionToken(req.cookies.sessionToken).then(
+        async (response) => {
+          if (response && response.id === Number(req.query.userId)) {
+            const favouriteDog = await getFavouriteById({
+              dogId: Number(req.query.dogId),
+              userId: Number(req.query.userId),
+            });
 
-      if (!favouriteDog) {
-        res.status(404).send({
-          errors: [
-            {
-              message:
-                'We could not add this dog to your favourites, please try again',
-            },
-          ],
-        });
-        return;
-      }
-      return res.status(200).send({ favouriteDog: favouriteDog });
+            if (!favouriteDog) {
+              res.status(404).send({
+                errors: [
+                  {
+                    message:
+                      'We could not add this dog to your favourites, please try again',
+                  },
+                ],
+              });
+              return;
+            }
+            return res.status(200).send({ favouriteDog: favouriteDog });
+          } else {
+            return res.status(401).send({
+              errors: [{ message: 'Not allowed' }],
+            });
+          }
+        },
+      );
     } catch {
       res.status(404).send({
         errors: [{ message: 'Some problems occured with your favourite' }],
@@ -42,11 +53,21 @@ export default async function handler(
     }
   } else if (req.method === 'DELETE') {
     try {
-      const deletedFavourite = await deleteFavouriteDog({
-        dogId: Number(req.query.dogId),
-        userId: Number(req.query.userId),
-      });
-      return res.status(200).send({ favouriteDog: deletedFavourite });
+      await getUserBySessionToken(req.cookies.sessionToken).then(
+        async (response) => {
+          if (response && response.id === Number(req.query.userId)) {
+            const deletedFavourite = await deleteFavouriteDog({
+              dogId: Number(req.query.dogId),
+              userId: Number(req.query.userId),
+            });
+            return res.status(200).send({ favouriteDog: deletedFavourite });
+          } else {
+            return res.status(401).send({
+              errors: [{ message: 'Not allowed' }],
+            });
+          }
+        },
+      );
     } catch {
       res.status(404).send({
         errors: [{ message: 'Dog not found' }],
@@ -55,11 +76,21 @@ export default async function handler(
     }
   } else if (req.method === 'POST') {
     try {
-      const insertedFavouriteDog = await insertFavouriteDog({
-        dogId: Number(req.query.dogId),
-        userId: Number(req.query.userId),
-      });
-      return res.status(200).send({ favouriteDog: insertedFavouriteDog });
+      await getUserBySessionToken(req.cookies.sessionToken).then(
+        async (response) => {
+          if (response && response.id === Number(req.query.userId)) {
+            const insertedFavouriteDog = await insertFavouriteDog({
+              dogId: Number(req.query.dogId),
+              userId: Number(req.query.userId),
+            });
+            return res.status(200).send({ favouriteDog: insertedFavouriteDog });
+          } else {
+            return res.status(401).send({
+              errors: [{ message: 'Not allowed' }],
+            });
+          }
+        },
+      );
     } catch {
       res.status(404).send({
         errors: [{ message: 'Dog not found' }],
