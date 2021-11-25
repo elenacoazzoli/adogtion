@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
-import { User } from '../../util/database';
+import { DogAndShelterType, User } from '../../util/database';
 import { Errors } from '../../util/helpers/errors';
 import { AdopterResponse } from '../api/user/[userId]';
 
@@ -242,9 +242,10 @@ const DonationsSectionStyled = styled.section`
 interface UserProfileProps {
   user: User;
   profile: User;
+  donations: DogAndShelterType[];
 }
 
-function UserProfile({ user, profile }: UserProfileProps) {
+function UserProfile({ user, profile, donations }: UserProfileProps) {
   const [errors, setErrors] = useState<Errors>([]);
   const router = useRouter();
   return (
@@ -477,6 +478,16 @@ function UserProfile({ user, profile }: UserProfileProps) {
         <SubTitleStyled>
           Your donations to support our dogs till they find a forever home.
         </SubTitleStyled>
+        <div>
+          {donations.map((donation) => {
+            return (
+              <div key={donation.dogId}>
+                <p>{donation.dogName}</p>
+                <p>{donation.amount}</p>
+              </div>
+            );
+          })}
+        </div>
       </DonationsSectionStyled>
     </Layout>
   );
@@ -500,16 +511,33 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
-
+  const sessionToken = context.req.cookies.sessionToken;
   const baseUrl = process.env.BASE_URL;
-  const profileResponse = await fetch(`${baseUrl}/api/user/${allowedUser.id}`);
+  const profileResponse = await fetch(`${baseUrl}/api/user/${allowedUser.id}`, {
+    method: 'GET',
+    headers: {
+      cookie: `sessionToken=${sessionToken}`,
+    },
+  });
   const profileInfo = await profileResponse.json();
+
+  const donationsResponse = await fetch(
+    `${baseUrl}/api/user/${allowedUser.id}/donations`,
+    {
+      method: 'GET',
+      headers: {
+        cookie: `sessionToken=${sessionToken}`,
+      },
+    },
+  );
+  const donations = await donationsResponse.json();
 
   // TODO: put here gSSP code for getting profile data and return props
   return {
     props: {
       user: allowedUser,
       profile: profileInfo.profile,
+      donations,
     },
   };
 }

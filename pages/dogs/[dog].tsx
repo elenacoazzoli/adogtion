@@ -229,6 +229,9 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
   const [favouriteToggle, setFavouriteToggle] = useState(isFavourite);
   const router = useRouter();
   const [errors, setErrors] = useState<Errors>([]);
+  const [donationAmount, setDonationAmount] = useState(0);
+  const [isDonationOpen, setIsDonationOpen] = useState(false);
+  const [sucessfulPurchase, setSuccessfulPurchase] = useState('');
 
   async function favouriteClickHandler() {
     // check if user is logged in? and then return to dog
@@ -282,6 +285,49 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
     }
   }
 
+  function donationsClickHandler(amount: number) {
+    // check if user is logged in? and then return to dog
+    if (allowedUser === null) {
+      const destination =
+        typeof router.query.returnTo === 'string' && router.query.returnTo
+          ? router.query.returnTo
+          : `/login?returnTo=/dogs/${individualDog.dogId}`;
+      router.push(destination);
+      // call API with delete or post to add or remove favourite passing the user id and dog id
+      // set FavouriteToogle to
+    } else {
+      setSuccessfulPurchase('');
+      if (isDonationOpen) {
+        if (amount !== donationAmount) {
+          setDonationAmount(amount);
+        } else {
+          setIsDonationOpen(false);
+          setDonationAmount(0);
+        }
+      } else {
+        setIsDonationOpen(true);
+        setDonationAmount(amount);
+      }
+    }
+  }
+
+  async function donate() {
+    await fetch(`/api/user/${allowedUser?.id}/donations`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        dogId: individualDog.dogId,
+        amount: donationAmount,
+      }),
+    }).then(() => {
+      setSuccessfulPurchase(
+        `Thank you for donating € ${donationAmount} to ${individualDog.dogName}`,
+      );
+    });
+  }
+
   return (
     <Layout>
       <Head>
@@ -324,22 +370,54 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
             <GiftIcon alt="bowl of dog food" src="/icons/bowl.png" />
             <PriceStyled>€ 10</PriceStyled>
             <ParagraphStyled>Buy food and health supplies</ParagraphStyled>
-            <ButtonStyled>Buy food</ButtonStyled>
+            <ButtonStyled
+              onClick={() => {
+                donationsClickHandler(10);
+              }}
+            >
+              Buy food
+            </ButtonStyled>
           </SponsorGiftStyled>
           <SponsorGiftStyled>
             <GiftIcon alt="dog toys" src="/icons/toy.png" />
             <PriceStyled>€ 25</PriceStyled>
             <ParagraphStyled>Get toys and bedding</ParagraphStyled>
-            <ButtonStyled>Buy toys</ButtonStyled>
+            <ButtonStyled
+              onClick={() => {
+                donationsClickHandler(25);
+              }}
+            >
+              Buy toys
+            </ButtonStyled>
           </SponsorGiftStyled>
           <SponsorGiftStyled>
             <GiftIcon alt="bowl of dog food" src="/icons/vet.png" />
             <PriceStyled>€ 50</PriceStyled>
             <ParagraphStyled>Vet visits and health checks</ParagraphStyled>
-            <ButtonStyled>Buy a vet visit</ButtonStyled>
+            <ButtonStyled
+              onClick={() => {
+                donationsClickHandler(50);
+              }}
+            >
+              Buy a vet visit
+            </ButtonStyled>
           </SponsorGiftStyled>
         </SponsorGiftsContainer>
       </SponsorSectionStyled>
+      {isDonationOpen && (
+        <section>
+          <div>
+            {sucessfulPurchase.length > 0 ? (
+              <p>{sucessfulPurchase}</p>
+            ) : (
+              <div>
+                <p>Do a payment of {donationAmount}</p>
+                <button onClick={donate}>Donate gift</button>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
       <AdoptionSectionStyled>
         <H2Styled id="adopt">
           Find out how you can adopt {individualDog.dogName}
@@ -406,10 +484,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   );
 
   let isFavourite = false;
+  const sessionToken = context.req.cookies.sessionToken;
   // if the user has a started session, get the information about dog favourites
   if (allowedUser) {
     const isFavouriteResponse = await fetch(
       `${baseUrl}/api/user/${allowedUser.id}/favourites/${individualDog.dogId}`,
+      {
+        method: 'GET',
+        headers: {
+          cookie: `sessionToken=${sessionToken}`,
+        },
+      },
     );
     const favouriteDog = await isFavouriteResponse.json();
 

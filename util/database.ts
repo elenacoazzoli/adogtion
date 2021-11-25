@@ -14,6 +14,7 @@ export type DogType = {
   pets: boolean;
   service: boolean;
   image: string;
+  amount?: number;
 };
 
 export type ShelterType = {
@@ -66,6 +67,13 @@ export type Favourite = {
   favouriteId: number;
   userId: number;
   dogId: number;
+};
+
+export type Donation = {
+  donationId: number;
+  userId: number;
+  dogId: number;
+  amount: number;
 };
 
 // read the environment variables in the .env file to connect to Postgres
@@ -606,6 +614,63 @@ export async function getAllFavouriteDogsByUserId(userId: number) {
       dogs.shelter = shelters.id AND
       dogs.id = favourites.dog_id AND
       favourites.user_id = ${userId};
+  `;
+  return dogs.map((dog) => {
+    // Convert snake case to camelCase
+    return camelcaseKeys(dog);
+  });
+}
+
+export async function insertDogDonation({
+  dogId,
+  userId,
+  amount,
+}: {
+  dogId: number;
+  userId: number;
+  amount: number;
+}) {
+  const [donation] = await sql<[Donation]>`
+  INSERT INTO donations
+  (user_id, dog_id, amount)
+  VALUES
+  (${userId}, ${dogId}, ${amount})
+  RETURNING
+  id AS donation_id,
+  user_id,
+  dog_id,
+  amount;
+  `;
+  return camelcaseKeys(donation);
+}
+
+export async function getDonationsByUserId(userId: number) {
+  const dogs = await sql<DogAndShelterType[]>`
+    SELECT
+      dogs.id AS dog_id,
+      dogs.dog_name,
+      dogs.dog_description,
+      dogs.age,
+      dogs.gender,
+      dogs.size,
+      dogs.activity_level,
+      dogs.kids,
+      dogs.pets,
+      dogs.service,
+      dogs.image,
+      shelters.id AS shelter_id,
+      shelters.shelter_name,
+      shelters.shelter_description,
+      shelters.address,
+      shelters.region,
+      shelters.phone,
+      donations.amount
+     FROM
+      dogs, shelters, donations
+     WHERE
+      dogs.shelter = shelters.id AND
+      dogs.id = donations.dog_id AND
+      donations.user_id = ${userId};
   `;
   return dogs.map((dog) => {
     // Convert snake case to camelCase
