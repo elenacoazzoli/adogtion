@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { DogAndShelterType } from '../util/database';
+import { getAgeRangeByYears } from '../util/helpers/dog';
 
 const DogCardPlaceholder = styled.div`
   display: flex;
@@ -80,7 +81,9 @@ const DogInfoCard: FunctionComponent<DogInfoCardProps> = ({ dog }) => (
           <DogImage alt={`picture of ${dog.dogName}`} src={dog.image} />
           <DogInfoContainer>
             <DogName>{dog.dogName}</DogName>
-            <DogAgeGender>Young - {dog.gender}</DogAgeGender>
+            <DogAgeGender>
+              {getAgeRangeByYears(dog.age)} - {dog.gender}
+            </DogAgeGender>
             <ShelterLocation>
               {dog.region}, {dog.shelterName}
             </ShelterLocation>

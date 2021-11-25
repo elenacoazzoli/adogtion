@@ -40,21 +40,6 @@ function Dogs({ dogs }: DogsProps) {
       </Head>
       <PageContainer>
         <PageTitle>Dogs available for adoption</PageTitle>
-        {/* <CategoryButtonContainer>
-          <CategoryFilterButton onClick={() => setFilteredPastaList(pastas)}>
-            ALL PASTAS
-          </CategoryFilterButton> */}
-        {/* {categories.map((category: CategoryType) => {
-            return (
-              <CategoryFilterButton
-                key={category.category}
-                onClick={() => showPastasByCategory(category.category)}
-              >
-                {category.category.toUpperCase()}
-              </CategoryFilterButton>
-            );
-          })}
-        </CategoryButtonContainer> */}
         <InfoCardsContainer>
           {dogs.map((dog: DogAndShelterType) => {
             return <DogInfoCard dog={dog} key={dog.dogId} />;
