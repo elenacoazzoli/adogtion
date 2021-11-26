@@ -1,6 +1,7 @@
 import camelcaseKeys from 'camelcase-keys';
 import dotenvSafe from 'dotenv-safe';
 import postgres from 'postgres';
+import setPostgresDefaultsOnHeroku from './setPostgresDefaultsOnHeroku';
 
 export type DogType = {
   dogId: number;
@@ -75,6 +76,8 @@ export type Donation = {
   dogId: number;
   amount: number;
 };
+
+setPostgresDefaultsOnHeroku();
 
 // read the environment variables in the .env file to connect to Postgres
 dotenvSafe.config();

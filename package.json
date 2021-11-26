@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate": "dotenv ley"
+    "migrate": "dotenv ley",
+    "heroku-postbuild": "yarn migrate up && yarn build"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -56,5 +57,8 @@
   "resolutions": {
     "eslint-plugin-react": "7.26.1",
     "eslint-plugin-testing-library": "5.0.0"
-  }
+  },
+  "cacheDirectories": [
+    ".next/cache"
+  ]
 }
