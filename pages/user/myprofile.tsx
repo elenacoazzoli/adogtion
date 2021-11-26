@@ -375,10 +375,10 @@ function UserProfile({ user, profile, donations }: UserProfileProps) {
                   defaultValue={profile.age}
                 >
                   <option value="NULL">(no age preference)</option>
-                  <option value="puppy">Puppy</option>
-                  <option value="young">Young dog</option>
-                  <option value="adult">Adult dog</option>
-                  <option value="senior">Senior dog</option>
+                  <option value="Puppy">Puppy</option>
+                  <option value="Young">Young dog</option>
+                  <option value="Adult">Adult dog</option>
+                  <option value="Senior">Senior dog</option>
                 </SelectStyled>
               </LabelsAndInputsContainer>
 

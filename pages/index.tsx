@@ -93,7 +93,7 @@ const SecondSectionStyled = styled.section`
 `;
 const H2Styled = styled.h2`
   font-family: 'Playfair Display', serif;
-  color: #2f3b4d;
+  color: #343f53;
   font-weight: 900;
   font-size: 2.5rem;
   margin: 32px 0 0 0;
