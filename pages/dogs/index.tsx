@@ -90,7 +90,7 @@ export const getServerSideProps: GetServerSideProps = async (
     context.req.cookies.sessionToken,
   );
 
-  let profileInfo = undefined;
+  let profileInfo = null;
 
   if (allowedUser) {
     const sessionToken = context.req.cookies.sessionToken;
