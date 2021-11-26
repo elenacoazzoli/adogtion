@@ -117,6 +117,44 @@ const ButtonStyled = styled.button`
   }
 `;
 
+const PaymentSectionStyled = styled.section`
+  display: flex;
+  justify-content: center;
+  padding: 0 64px;
+  margin-top: 24px;
+`;
+
+const PaymentAllInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 90%;
+  background-color: #dfe3e9;
+  padding: 8px 8px 24px 8px;
+`;
+
+const PaymentCardContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 48px;
+  row-gap: 12px;
+  margin-top: 8px;
+  padding: 0 16px 16px 32px;
+  background-color: #dfe3e9;
+  justify-self: center;
+`;
+
+const BillingHeading = styled.p`
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  text-align: center;
+  width: 100%;
+  color: #2f3b4d;
+  font-size: 1.5rem;
+  margin: 12px 0 0 0;
+  padding: 0 0 0 0;
+`;
+
 const AdoptionSectionStyled = styled.section`
   display: flex;
   flex-direction: column;
@@ -323,7 +361,7 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
       }),
     }).then(() => {
       setSuccessfulPurchase(
-        `Thank you for donating € ${donationAmount} to ${individualDog.dogName}`,
+        `Thank you for donating € ${donationAmount} to ${individualDog.dogName}!`,
       );
     });
   }
@@ -405,18 +443,49 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
         </SponsorGiftsContainer>
       </SponsorSectionStyled>
       {isDonationOpen && (
-        <section>
-          <div>
+        <PaymentSectionStyled>
+          <PaymentAllInfoContainer>
             {sucessfulPurchase.length > 0 ? (
-              <p>{sucessfulPurchase}</p>
+              <BillingHeading>{sucessfulPurchase}</BillingHeading>
             ) : (
-              <div>
-                <p>Do a payment of {donationAmount}</p>
-                <button onClick={donate}>Donate gift</button>
-              </div>
+              <>
+                <BillingHeading>
+                  Finalise your payment of € {donationAmount} for{' '}
+                  {individualDog.dogName}
+                </BillingHeading>
+                <PaymentCardContainer>
+                  <LabelsAndInputsContainer>
+                    <LabelStyled htmlFor="City">City</LabelStyled>
+                    <InputStyled id="City" placeholder="Vienna" />
+                  </LabelsAndInputsContainer>
+                  <LabelsAndInputsContainer>
+                    <LabelStyled htmlFor="PostCode">Postal code</LabelStyled>
+                    <InputStyled id="PostCode" placeholder="1100" />
+                  </LabelsAndInputsContainer>
+                  <LabelsAndInputsContainer>
+                    <LabelStyled htmlFor="id">Country</LabelStyled>
+                    <InputStyled id="id" placeholder="Austria" />
+                  </LabelsAndInputsContainer>
+                  <LabelsAndInputsContainer>
+                    <LabelStyled htmlFor="id">Credit card </LabelStyled>
+                    <InputStyled id="id" placeholder="Credit card number" />
+                  </LabelsAndInputsContainer>
+                  <LabelsAndInputsContainer>
+                    <LabelStyled htmlFor="id">Expiration date</LabelStyled>
+                    <InputStyled id="id" placeholder="MM/YY" />
+                  </LabelsAndInputsContainer>
+                  <LabelsAndInputsContainer>
+                    <LabelStyled htmlFor="id">CVV</LabelStyled>
+                    <InputStyled id="id" placeholder="Security code" />
+                  </LabelsAndInputsContainer>
+                  <div>&nbsp;</div>
+                  <div>&nbsp;</div>
+                  <ButtonStyled onClick={donate}>Donate gift</ButtonStyled>
+                </PaymentCardContainer>
+              </>
             )}
-          </div>
-        </section>
+          </PaymentAllInfoContainer>
+        </PaymentSectionStyled>
       )}
       <AdoptionSectionStyled>
         <H2Styled id="adopt">

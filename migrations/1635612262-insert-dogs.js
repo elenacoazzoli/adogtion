@@ -1,7 +1,8 @@
 const dogs = [
   {
     dog_name: 'Gnocchi',
-    dog_description: 'Description for Gnocchi',
+    dog_description:
+      'When I am not bounding around the agility course, I am playing hide and seek with my carers. I am really good at meeting new people and super cuddly around kids and little humans.',
     age: 3,
     gender: 'female',
     size: 15,
@@ -15,7 +16,8 @@ const dogs = [
   },
   {
     dog_name: 'Pancino',
-    dog_description: 'Description for Pancino',
+    dog_description:
+      "I love spending most of my time going on walks to the Donau where I get to go in for a little dip in the water, it's so much fun! There's nothing I love more than a cuddle with my favourite carer, or a good long nap! I have a really difficult time sharing my food and bed with my doggy friends, so when they come near me it makes me really anxious.",
     age: 7,
     gender: 'male',
     size: 7,
@@ -43,7 +45,8 @@ const dogs = [
   },
   {
     dog_name: 'Karl Barx',
-    dog_description: 'Description for Karl Barx',
+    dog_description:
+      'I love to spend my time outdoors, pursuing my favourite hobby, birdwatching! Every time I spot one, I get super excited and make sure to let everyone know by giving a big bark! Although if it starts raining, I will be back inside in a flash. I am not the biggest fan of bad weather and I especially do not like getting my fur wet!',
     age: 5,
     gender: 'male',
     size: 17,
@@ -71,7 +74,8 @@ const dogs = [
   },
   {
     dog_name: 'Oreo',
-    dog_description: 'Description for Oreo',
+    dog_description:
+      'Although I am a bit old, I still enjoy life to the full! I love spending time on the sofa and spending time with my caregivers. I love being around new people and if you give me treats, I will be your new best friend. As age is catching up on me, I need special care and support from vets and specialists.',
     age: 11,
     gender: 'female',
     size: 10,
@@ -127,7 +131,8 @@ const dogs = [
   },
   {
     dog_name: 'Furdinand',
-    dog_description: 'Description for Furdinand',
+    dog_description:
+      'I am a cheeky chappy with a lot of energy and, as I am sure you can imagine, I love doing zoomies around and around the paddocks all day! Although when I am not racing around the fields, you will find me trying to master some fun food games! I can still be a little bit wary around people and kids when I first meet them.',
     age: 3,
     gender: 'male',
     size: 18,

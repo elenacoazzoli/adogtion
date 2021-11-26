@@ -1,7 +1,8 @@
 const shelters = [
   {
     shelter_name: 'Happy House',
-    shelter_description: 'Description for Happy House',
+    shelter_description:
+      'Finding forever homes for dogs since 1991. Happy House is a no-kill shelter that rescues and cares for homeless dogs. We are a non-profit shelter for all breeds. We care for and rehabilitate our pets till the find their forever homes.',
     address: 'Via dei Mille,1000',
     region: 'Wien',
     phone: '+43699123456789',

@@ -1,7 +1,8 @@
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head';
-import { useState } from 'react';
+import Link from 'next/link';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
 import { DogAndShelterType, User } from '../../util/database';
@@ -234,9 +235,65 @@ const ButtonStyled = styled.button`
 const DonationsSectionStyled = styled.section`
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  padding: 16px 32px;
-  margin: 16px 48px 16px 48px;
+  padding: 0 32px;
+  margin: 4px 48px 16px 48px;
+`;
+
+const DonationContainer = styled.div`
+  display: flex;
+  padding: 16px;
+  margin: 8px 40px 8px 8px;
+  text-decoration: none;
+  border-bottom: 1px solid #2f3b4d;
+  min-width: 300px;
+`;
+
+const ImageAndDogInfoContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  column-gap: 12px;
+  padding: 0 16px 4px 32px;
+  justify-self: center;
+  width: 90%;
+`;
+
+const DogInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+`;
+
+const DogImage = styled.div<{ srcPath: string }>`
+  background: url(${(props) => props.srcPath});
+  width: 60px;
+  height: 60px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  background-position: center;
+  margin: 8px 16px;
+`;
+
+const DogName = styled.a`
+  font-family: 'Playfair Display', serif;
+  color: #343f53;
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-align: left;
+  margin: 8px 0;
+  :hover {
+    text-decoration: underline 2px solid #343f53;
+  }
+`;
+
+const ParagraphStyled = styled.p`
+  font-family: 'Montserrat', sans-serif;
+  color: #343f53;
+  font-weight: 500;
+  font-size: 1rem;
+  text-align: left;
+  margin: 4px 0;
 `;
 
 interface UserProfileProps {
@@ -481,10 +538,24 @@ function UserProfile({ user, profile, donations }: UserProfileProps) {
         <div>
           {donations.map((donation) => {
             return (
-              <div key={donation.dogId}>
-                <p>{donation.dogName}</p>
-                <p>{donation.amount}</p>
-              </div>
+              <DonationContainer key={donation.dogId}>
+                <ImageAndDogInfoContainer>
+                  <DogImage
+                    role="img"
+                    aria-label={`picture of dog ${donation.dogName}`}
+                    srcPath={donation.image}
+                  />
+                  <DogInfoContainer>
+                    <Link href={`/dogs/${donation.dogId}`} passHref>
+                      <DogName>{donation.dogName}</DogName>
+                    </Link>
+                    <ParagraphStyled>
+                      {donation.shelterName}, {donation.region}
+                    </ParagraphStyled>
+                  </DogInfoContainer>
+                  <ParagraphStyled>€ {donation.amount}</ParagraphStyled>
+                </ImageAndDogInfoContainer>
+              </DonationContainer>
             );
           })}
         </div>
