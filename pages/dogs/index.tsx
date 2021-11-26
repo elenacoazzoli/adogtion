@@ -31,9 +31,10 @@ const InfoCardsContainer = styled.div`
 interface DogsProps {
   dogs: DogAndShelterType[];
   profile: User | undefined;
+  favourites: DogAndShelterType[] | undefined;
 }
 
-function Dogs({ dogs, profile }: DogsProps) {
+function Dogs({ dogs, profile, favourites }: DogsProps) {
   function isAMatch(dog: DogAndShelterType) {
     let matchesCount = 0;
     if (profile) {
@@ -55,6 +56,12 @@ function Dogs({ dogs, profile }: DogsProps) {
     return matchesCount > 3;
   }
 
+  function isFavourite(dogId: number) {
+    return favourites
+      ? favourites.some((favourite) => favourite.dogId === dogId)
+      : false;
+  }
+
   return (
     <Layout>
       <Head>
@@ -67,7 +74,12 @@ function Dogs({ dogs, profile }: DogsProps) {
         <InfoCardsContainer>
           {dogs.map((dog: DogAndShelterType) => {
             return (
-              <DogInfoCard dog={dog} key={dog.dogId} isAMatch={isAMatch(dog)} />
+              <DogInfoCard
+                dog={dog}
+                key={dog.dogId}
+                isAMatch={isAMatch(dog)}
+                isFavourite={isFavourite(dog.dogId)}
+              />
             );
           })}
         </InfoCardsContainer>
@@ -91,6 +103,7 @@ export const getServerSideProps: GetServerSideProps = async (
   );
 
   let profileInfo = null;
+  let favouritesInfo = null;
 
   if (allowedUser) {
     const sessionToken = context.req.cookies.sessionToken;
@@ -104,11 +117,22 @@ export const getServerSideProps: GetServerSideProps = async (
       },
     );
     profileInfo = await profileResponse.json();
+    const favouritesResponse = await fetch(
+      `${baseUrl}/api/user/${allowedUser.id}/favourites`,
+      {
+        method: 'GET',
+        headers: {
+          cookie: `sessionToken=${sessionToken}`,
+        },
+      },
+    );
+    favouritesInfo = await favouritesResponse.json();
   }
   return {
     props: {
       dogs,
       profile: profileInfo && profileInfo.profile,
+      favourites: favouritesInfo && favouritesInfo.favouriteDogs,
     },
   };
 };

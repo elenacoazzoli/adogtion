@@ -42,6 +42,22 @@ const MatchContainer = styled.div`
   font-weight: 600;
 `;
 
+const FavouriteContainer = styled.div`
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  border-radius: 50%;
+  background-color: crimson;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const FavouriteIcon = styled.img`
+  width: 20px;
+`;
+
 const DogInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -85,11 +101,13 @@ const ShelterLocation = styled.span`
 interface DogInfoCardProps {
   dog: DogAndShelterType;
   isAMatch?: boolean;
+  isFavourite?: boolean;
 }
 
 const DogInfoCard: FunctionComponent<DogInfoCardProps> = ({
   dog,
   isAMatch,
+  isFavourite,
 }) => {
   return (
     <DogCardPlaceholder>
@@ -97,6 +115,14 @@ const DogInfoCard: FunctionComponent<DogInfoCardProps> = ({
         <DogCardLink aria-label={`Go to dog ${dog.dogName} page`}>
           <DogCardContainer>
             {isAMatch && <MatchContainer>IT'S A MATCH</MatchContainer>}
+            {isFavourite && (
+              <FavouriteContainer>
+                <FavouriteIcon
+                  src="/icons/heartWhite.svg"
+                  alt={`${dog.dogName} is a favourite`}
+                />
+              </FavouriteContainer>
+            )}
             <DogImage alt={`picture of ${dog.dogName}`} src={dog.image} />
             <DogInfoContainer>
               <DogName>{dog.dogName}</DogName>
