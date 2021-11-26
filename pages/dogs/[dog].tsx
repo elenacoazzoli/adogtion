@@ -7,7 +7,7 @@ import DogDescriptionInfo from '../../components/DogDescriptionInfo';
 import Layout from '../../components/Layout';
 import { DogAndShelterType, User } from '../../util/database';
 import { Errors } from '../../util/helpers/errors';
-import { InsertFavouriteDogResponse } from '../api/favourites/add';
+import { FavouriteDogResponse } from '../api/user/[userId]/favourites/[dogId]';
 
 const HeadingContainer = styled.div`
   display: flex;
@@ -229,6 +229,9 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
   const [favouriteToggle, setFavouriteToggle] = useState(isFavourite);
   const router = useRouter();
   const [errors, setErrors] = useState<Errors>([]);
+  const [donationAmount, setDonationAmount] = useState(0);
+  const [isDonationOpen, setIsDonationOpen] = useState(false);
+  const [sucessfulPurchase, setSuccessfulPurchase] = useState('');
 
   async function favouriteClickHandler() {
     // check if user is logged in? and then return to dog
@@ -242,17 +245,15 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
       // set FavouriteToogle to
     } else {
       if (favouriteToggle) {
-        const unfavouriteResponse = await fetch('/api/favourites/remove', {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
+        const unfavouriteResponse = await fetch(
+          `/api/user/${allowedUser.id}/favourites/${individualDog.dogId}`,
+          {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
           },
-          // this body will be the res.body of the API route
-          body: JSON.stringify({
-            dogId: individualDog.dogId,
-            userId: allowedUser.id,
-          }),
-        });
+        );
 
         const unfavouriteJson = await unfavouriteResponse.json();
 
@@ -263,19 +264,17 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
         }
         setFavouriteToggle(false);
       } else {
-        const favouriteResponse = await fetch('/api/favourites/add', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const favouriteResponse = await fetch(
+          `/api/user/${allowedUser.id}/favourites/${individualDog.dogId}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
           },
-          // this body will be the res.body of the API route
-          body: JSON.stringify({
-            dogId: individualDog.dogId,
-            userId: allowedUser.id,
-          }),
-        });
+        );
         const favouriteJson =
-          (await favouriteResponse.json()) as InsertFavouriteDogResponse;
+          (await favouriteResponse.json()) as FavouriteDogResponse;
         // if contains errors, setErrors
         if ('errors' in favouriteJson) {
           setErrors(favouriteJson.errors);
@@ -284,6 +283,49 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
         setFavouriteToggle(true);
       }
     }
+  }
+
+  function donationsClickHandler(amount: number) {
+    // check if user is logged in? and then return to dog
+    if (allowedUser === null) {
+      const destination =
+        typeof router.query.returnTo === 'string' && router.query.returnTo
+          ? router.query.returnTo
+          : `/login?returnTo=/dogs/${individualDog.dogId}`;
+      router.push(destination);
+      // call API with delete or post to add or remove favourite passing the user id and dog id
+      // set FavouriteToogle to
+    } else {
+      setSuccessfulPurchase('');
+      if (isDonationOpen) {
+        if (amount !== donationAmount) {
+          setDonationAmount(amount);
+        } else {
+          setIsDonationOpen(false);
+          setDonationAmount(0);
+        }
+      } else {
+        setIsDonationOpen(true);
+        setDonationAmount(amount);
+      }
+    }
+  }
+
+  async function donate() {
+    await fetch(`/api/user/${allowedUser?.id}/donations`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        dogId: individualDog.dogId,
+        amount: donationAmount,
+      }),
+    }).then(() => {
+      setSuccessfulPurchase(
+        `Thank you for donating € ${donationAmount} to ${individualDog.dogName}`,
+      );
+    });
   }
 
   return (
@@ -308,6 +350,11 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
         favouriteClickHandler={favouriteClickHandler}
         favouriteToggle={favouriteToggle}
       />
+      <div>
+        {errors.map((error) => (
+          <div key={`error-${error.message}`}>{error.message}</div>
+        ))}
+      </div>
       <SponsorSectionStyled>
         <H2Styled id="sponsor">
           Here are gifts you can buy to support {individualDog.dogName}
@@ -323,22 +370,54 @@ function Dog({ individualDog, allowedUser, isFavourite }: DogsProps) {
             <GiftIcon alt="bowl of dog food" src="/icons/bowl.png" />
             <PriceStyled>€ 10</PriceStyled>
             <ParagraphStyled>Buy food and health supplies</ParagraphStyled>
-            <ButtonStyled>Buy food</ButtonStyled>
+            <ButtonStyled
+              onClick={() => {
+                donationsClickHandler(10);
+              }}
+            >
+              Buy food
+            </ButtonStyled>
           </SponsorGiftStyled>
           <SponsorGiftStyled>
             <GiftIcon alt="dog toys" src="/icons/toy.png" />
             <PriceStyled>€ 25</PriceStyled>
             <ParagraphStyled>Get toys and bedding</ParagraphStyled>
-            <ButtonStyled>Buy toys</ButtonStyled>
+            <ButtonStyled
+              onClick={() => {
+                donationsClickHandler(25);
+              }}
+            >
+              Buy toys
+            </ButtonStyled>
           </SponsorGiftStyled>
           <SponsorGiftStyled>
             <GiftIcon alt="bowl of dog food" src="/icons/vet.png" />
             <PriceStyled>€ 50</PriceStyled>
             <ParagraphStyled>Vet visits and health checks</ParagraphStyled>
-            <ButtonStyled>Buy a vet visit</ButtonStyled>
+            <ButtonStyled
+              onClick={() => {
+                donationsClickHandler(50);
+              }}
+            >
+              Buy a vet visit
+            </ButtonStyled>
           </SponsorGiftStyled>
         </SponsorGiftsContainer>
       </SponsorSectionStyled>
+      {isDonationOpen && (
+        <section>
+          <div>
+            {sucessfulPurchase.length > 0 ? (
+              <p>{sucessfulPurchase}</p>
+            ) : (
+              <div>
+                <p>Do a payment of {donationAmount}</p>
+                <button onClick={donate}>Donate gift</button>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
       <AdoptionSectionStyled>
         <H2Styled id="adopt">
           Find out how you can adopt {individualDog.dogName}
@@ -405,19 +484,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   );
 
   let isFavourite = false;
+  const sessionToken = context.req.cookies.sessionToken;
   // if the user has a started session, get the information about dog favourites
   if (allowedUser) {
-    const isFavouriteResponse = await fetch(`${baseUrl}/api/favourites/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const isFavouriteResponse = await fetch(
+      `${baseUrl}/api/user/${allowedUser.id}/favourites/${individualDog.dogId}`,
+      {
+        method: 'GET',
+        headers: {
+          cookie: `sessionToken=${sessionToken}`,
+        },
       },
-      // this body will be the res.body of the API route
-      body: JSON.stringify({
-        dogId: individualDog.dogId,
-        userId: allowedUser.id,
-      }),
-    });
+    );
     const favouriteDog = await isFavouriteResponse.json();
 
     if (favouriteDog.favouriteDog) {

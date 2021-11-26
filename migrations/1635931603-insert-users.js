@@ -1,10 +1,10 @@
 const users = [
   {
-    username: 'ecoazzoli',
+    username: 'happyhouseadmin',
     password_hash:
       '$2b$10$Nra68NN7jcoMbx9edq5Oi.U8Ym8sMxp9bDfcWp3JCXhEc7MNVNvZ2',
     role_id: 2,
-    shelter_id: 3,
+    shelter_id: 1,
   },
   {
     username: 'adopter',

@@ -4,7 +4,6 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import DogInfoCard from '../components/DogInfoCard';
 import Layout from '../components/Layout';
-import { useUserName } from '../components/UsernameContext';
 import { DogAndShelterType } from '../util/database';
 
 const BlobBackgroundImageLeft = styled.img`
@@ -94,7 +93,7 @@ const SecondSectionStyled = styled.section`
 `;
 const H2Styled = styled.h2`
   font-family: 'Playfair Display', serif;
-  color: #2f3b4d;
+  color: #343f53;
   font-weight: 900;
   font-size: 2.5rem;
   margin: 32px 0 0 0;
@@ -159,8 +158,6 @@ interface HomeProps {
 }
 
 function Home({ dogs }: HomeProps) {
-  const { username, refreshUsername } = useUserName();
-
   return (
     <Layout>
       <Head>

@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import Layout from '../../components/Layout';
 import { DogType, ShelterType, User } from '../../util/database';
 import { Errors } from '../../util/helpers/errors';
-import { UpdateShelterResponse } from '../api/shelters/about';
-import { InsertDogResponse } from '../api/shelters/dogs/insert';
+import { ShelterResponse } from '../api/shelters/[shelterId]';
+import { InsertDogResponse } from '../api/shelters/[shelterId]/dogs';
 
 const HeadingContainer = styled.div`
   display: flex;
@@ -379,16 +379,15 @@ function ShelterAdmin({ user, dogs, info }: ShelterAdminProps) {
 
   const deleteClickHandler = async (id: number) => {
     // do something with the values
-    const dogDeleteResponse = await fetch('/api/shelters/dogs/remove', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
+    const dogDeleteResponse = await fetch(
+      `/api/shelters/${info.shelterId}/dogs/${id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-      // this body will be the res.body of the API route
-      body: JSON.stringify({
-        dogId: id,
-      }),
-    });
+    );
     // casting of loginJson
     const deletedDogJson = await dogDeleteResponse.json();
 
@@ -432,24 +431,27 @@ function ShelterAdmin({ user, dogs, info }: ShelterAdminProps) {
             onSubmit={async (event) => {
               event.preventDefault();
               // do something with the values
-              const updateAboutResponse = await fetch('/api/shelters/about', {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
+              const updateAboutResponse = await fetch(
+                `/api/shelters/${info.shelterId}`,
+                {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  // this body will be the res.body of the API route
+                  body: JSON.stringify({
+                    shelterId: info.shelterId,
+                    shelterName: event.currentTarget.shelter.value,
+                    description: event.currentTarget.description.value,
+                    address: event.currentTarget.address.value,
+                    region: event.currentTarget.region.value,
+                    phone: event.currentTarget.phone.value,
+                  }),
                 },
-                // this body will be the res.body of the API route
-                body: JSON.stringify({
-                  shelterId: info.shelterId,
-                  shelterName: event.currentTarget.shelter.value,
-                  description: event.currentTarget.description.value,
-                  address: event.currentTarget.address.value,
-                  region: event.currentTarget.region.value,
-                  phone: event.currentTarget.phone.value,
-                }),
-              });
+              );
               // casting of loginJson
               const updateAboutJson =
-                (await updateAboutResponse.json()) as UpdateShelterResponse;
+                (await updateAboutResponse.json()) as ShelterResponse;
 
               // if updateAboutJson contains errors, setErrors
               if ('errors' in updateAboutJson) {
@@ -588,7 +590,7 @@ function ShelterAdmin({ user, dogs, info }: ShelterAdminProps) {
                 .then((response) => response.json())
                 .then(async (data) => {
                   const insertDogResponse = await fetch(
-                    '/api/shelters/dogs/insert',
+                    `/api/shelters/${info.shelterId}/dogs`,
                     {
                       method: 'POST',
                       headers: {
@@ -779,15 +781,28 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
+  const sessionToken = context.req.cookies.sessionToken;
   const baseUrl = process.env.BASE_URL;
   const dogsResponse = await fetch(
-    `${baseUrl}/api/shelters/dogs/${allowedUser.shelterId}`,
+    `${baseUrl}/api/shelters/${allowedUser.shelterId}/dogs`,
+    {
+      method: 'GET',
+      headers: {
+        cookie: `sessionToken=${sessionToken}`,
+      },
+    },
   );
 
   const shelterDogs = await dogsResponse.json();
 
   const infoResponse = await fetch(
     `${baseUrl}/api/shelters/${allowedUser.shelterId}`,
+    {
+      method: 'GET',
+      headers: {
+        cookie: `sessionToken=${sessionToken}`,
+      },
+    },
   );
 
   const shelterInfo = await infoResponse.json();
@@ -796,7 +811,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     props: {
       user: allowedUser,
       dogs: shelterDogs,
-      info: shelterInfo,
+      info: shelterInfo.shelter,
     },
   };
 }

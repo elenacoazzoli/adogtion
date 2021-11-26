@@ -14,14 +14,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // fetch an api route called logout
     await deleteSessionByToken(sessionToken);
 
-    // await fetch(`${process.env.BASE_URL}/api/logout`, {
-    //   method: 'GET',
-    //   headers: {
-    //     cookie: sessionToken,
-    //   },
-    //   credentials: 'include',
-    // });
-
     context.res.setHeader(
       'Set-Cookie',
       serialize('sessionToken', '', {

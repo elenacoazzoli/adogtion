@@ -51,7 +51,7 @@ const HeadingContainer = styled.div`
 
 const H1Styled = styled.h1`
   font-family: 'Playfair Display', serif;
-  color: #2f3b4d;
+  color: #343f53;
   font-weight: 900;
   font-size: 3rem;
   margin: 32px 0 16px 0;
@@ -60,7 +60,7 @@ const H1Styled = styled.h1`
 
 const LoginSubTitleStyled = styled.span`
   font-family: 'Montserrat', sans-serif;
-  color: #2f3b4d;
+  color: #343f53;
   font-weight: 500;
   font-size: 1rem;
   margin: 8px 0 0 0;
@@ -91,6 +91,7 @@ const LabelStyled = styled.label`
   font-size: 1rem;
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
+  color: #343f53;
 `;
 const InputStyled = styled.input`
   width: 100%;
@@ -99,6 +100,7 @@ const InputStyled = styled.input`
   border: 2px solid #dfe3e9;
   border-radius: 8px;
   font-size: 1rem;
+  color: #343f53;
 
   &::placeholder {
     font-family: 'Montserrat', sans-serif;

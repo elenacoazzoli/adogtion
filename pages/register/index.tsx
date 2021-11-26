@@ -52,7 +52,7 @@ const HeadingContainer = styled.div`
 
 const H1Styled = styled.h1`
   font-family: 'Playfair Display', serif;
-  color: #2f3b4d;
+  color: #343f53;
   font-weight: 900;
   font-size: 3rem;
   margin: 32px 0 16px 0;
@@ -61,7 +61,7 @@ const H1Styled = styled.h1`
 
 const RegisterSubTitleStyled = styled.span`
   font-family: 'Montserrat', sans-serif;
-  color: #2f3b4d;
+  color: #343f53;
   font-weight: 500;
   font-size: 1rem;
   margin: 8px 0 0 0;
@@ -92,6 +92,7 @@ const LabelStyled = styled.label`
   font-size: 1rem;
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
+  color: #343f53;
 `;
 const InputStyled = styled.input`
   width: 100%;
@@ -100,6 +101,7 @@ const InputStyled = styled.input`
   border: 2px solid #dfe3e9;
   border-radius: 8px;
   font-size: 1rem;
+  color: #343f53;
 
   &::placeholder {
     font-family: 'Montserrat', sans-serif;
@@ -152,6 +154,10 @@ interface RegisterProps {
 function RegisterPage({ csrfToken }: RegisterProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+
   const [errors, setErrors] = useState<Errors>([]);
   const router = useRouter();
   const { refreshUsername } = useUserName();
@@ -188,6 +194,9 @@ function RegisterPage({ csrfToken }: RegisterProps) {
               body: JSON.stringify({
                 username: username,
                 password: password,
+                email: email,
+                name: name,
+                surname: surname,
                 csrfToken: csrfToken,
               }),
             });
@@ -221,13 +230,41 @@ function RegisterPage({ csrfToken }: RegisterProps) {
             />
           </LabelsAndInputsContainer>
           <LabelsAndInputsContainer>
-            <LabelStyled htmlFor="passowrd">Password</LabelStyled>
+            <LabelStyled htmlFor="password">Password</LabelStyled>
             <InputStyled
               id="password"
               required
               type="password"
               value={password}
               onChange={(event) => setPassword(event.currentTarget.value)}
+            />
+          </LabelsAndInputsContainer>
+          <LabelsAndInputsContainer>
+            <LabelStyled htmlFor="email">Email address</LabelStyled>
+            <InputStyled
+              id="email"
+              required
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.currentTarget.value)}
+            />
+          </LabelsAndInputsContainer>
+          <LabelsAndInputsContainer>
+            <LabelStyled htmlFor="name">Name</LabelStyled>
+            <InputStyled
+              id="name"
+              required
+              value={name}
+              onChange={(event) => setName(event.currentTarget.value)}
+            />
+          </LabelsAndInputsContainer>
+          <LabelsAndInputsContainer>
+            <LabelStyled htmlFor="surname">Last name</LabelStyled>
+            <InputStyled
+              id="surname"
+              required
+              value={surname}
+              onChange={(event) => setSurname(event.currentTarget.value)}
             />
           </LabelsAndInputsContainer>
 

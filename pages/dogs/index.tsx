@@ -1,9 +1,11 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
+import { useState } from 'react';
 import styled from 'styled-components';
 import DogInfoCard from '../../components/DogInfoCard';
 import Layout from '../../components/Layout';
-import { DogAndShelterType } from '../../util/database';
+import { DogAndShelterType, User } from '../../util/database';
+import { getAgeRangeByYears } from '../../util/helpers/dog';
 
 const PageContainer = styled.div`
   display: flex;
@@ -28,9 +30,31 @@ const InfoCardsContainer = styled.div`
 
 interface DogsProps {
   dogs: DogAndShelterType[];
+  profile: User | undefined;
 }
 
-function Dogs({ dogs }: DogsProps) {
+function Dogs({ dogs, profile }: DogsProps) {
+  function isAMatch(dog: DogAndShelterType) {
+    let matchesCount = 0;
+    if (profile) {
+      matchesCount =
+        profile.gender === dog.gender ? matchesCount + 1 : matchesCount;
+      matchesCount =
+        profile.kids === dog.kids ? matchesCount + 1 : matchesCount;
+      matchesCount =
+        profile.pets === dog.pets ? matchesCount + 1 : matchesCount;
+      matchesCount =
+        profile.activityLevel === dog.activityLevel
+          ? matchesCount + 1
+          : matchesCount;
+      matchesCount =
+        profile.age === getAgeRangeByYears(dog.age)
+          ? matchesCount + 1
+          : matchesCount;
+    }
+    return matchesCount > 3;
+  }
+
   return (
     <Layout>
       <Head>
@@ -40,24 +64,11 @@ function Dogs({ dogs }: DogsProps) {
       </Head>
       <PageContainer>
         <PageTitle>Dogs available for adoption</PageTitle>
-        {/* <CategoryButtonContainer>
-          <CategoryFilterButton onClick={() => setFilteredPastaList(pastas)}>
-            ALL PASTAS
-          </CategoryFilterButton> */}
-        {/* {categories.map((category: CategoryType) => {
-            return (
-              <CategoryFilterButton
-                key={category.category}
-                onClick={() => showPastasByCategory(category.category)}
-              >
-                {category.category.toUpperCase()}
-              </CategoryFilterButton>
-            );
-          })}
-        </CategoryButtonContainer> */}
         <InfoCardsContainer>
           {dogs.map((dog: DogAndShelterType) => {
-            return <DogInfoCard dog={dog} key={dog.dogId} />;
+            return (
+              <DogInfoCard dog={dog} key={dog.dogId} isAMatch={isAMatch(dog)} />
+            );
           })}
         </InfoCardsContainer>
       </PageContainer>
@@ -65,14 +76,39 @@ function Dogs({ dogs }: DogsProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext,
+) => {
   // get data from API
   const baseUrl = process.env.BASE_URL;
   const dogsResponse = await fetch(`${baseUrl}/api/dogs/`);
   const dogs = await dogsResponse.json();
+
+  const { getUserBySessionToken } = await import('../../util/database');
+
+  const allowedUser = await getUserBySessionToken(
+    context.req.cookies.sessionToken,
+  );
+
+  let profileInfo = undefined;
+
+  if (allowedUser) {
+    const sessionToken = context.req.cookies.sessionToken;
+    const profileResponse = await fetch(
+      `${baseUrl}/api/user/${allowedUser.id}`,
+      {
+        method: 'GET',
+        headers: {
+          cookie: `sessionToken=${sessionToken}`,
+        },
+      },
+    );
+    profileInfo = await profileResponse.json();
+  }
   return {
     props: {
       dogs,
+      profile: profileInfo && profileInfo.profile,
     },
   };
 };

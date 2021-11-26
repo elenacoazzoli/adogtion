@@ -14,6 +14,7 @@ export type DogType = {
   pets: boolean;
   service: boolean;
   image: string;
+  amount?: number;
 };
 
 export type ShelterType = {
@@ -32,10 +33,27 @@ export type User = {
   username: string;
   roleId: number;
   shelterId: number | null;
+  name?: string;
+  surname?: string;
+  email?: string;
+  age?: string;
+  gender?: string;
+  size?: string;
+  activityLevel?: string;
+  kids?: boolean;
+  pets?: boolean;
+  service?: boolean;
 };
 
 export type UserWithPasswordHash = User & {
   passwordHash: string;
+};
+
+export type UserProfile = {
+  id: number;
+  username: string;
+  roleId: number;
+  shelterId: number | null;
 };
 
 export type Session = {
@@ -49,6 +67,13 @@ export type Favourite = {
   favouriteId: number;
   userId: number;
   dogId: number;
+};
+
+export type Donation = {
+  donationId: number;
+  userId: number;
+  dogId: number;
+  amount: number;
 };
 
 // read the environment variables in the .env file to connect to Postgres
@@ -221,6 +246,54 @@ export async function insertAdopterUser({
   return camelcaseKeys(user);
 }
 
+export async function insertProfileInfo({
+  email,
+  name,
+  surname,
+  userId,
+}: {
+  email: string;
+  name: string;
+  surname: string;
+  userId: number;
+}) {
+  const [profile] = await sql<[]>`
+  INSERT INTO profiles
+  (user_id, email, name, surname)
+  VALUES
+  (${userId}, ${email}, ${name}, ${surname})
+  RETURNING
+  *
+  `;
+  return camelcaseKeys(profile);
+}
+
+export async function getProfileInfoByUserId(id: number) {
+  const [user] = await sql<[User]>`
+  SELECT
+  users.id,
+  users.username,
+  users.role_id,
+  users.shelter_id,
+  profiles.name,
+  profiles.surname,
+  profiles.email,
+  profiles.gender,
+  profiles.age,
+  profiles.size,
+  profiles.activity_level,
+  profiles.kids,
+  profiles.pets,
+  profiles.service
+  FROM
+  users, profiles
+  WHERE
+  users.id= ${id} AND
+  profiles.user_id = users.id;
+  `;
+  return camelcaseKeys(user);
+}
+
 export async function getUser(id: number) {
   const [user] = await sql<[User]>`
   SELECT
@@ -248,6 +321,40 @@ export async function getUserWithPasswordHash(username: string) {
   username= ${username};
   `;
   return user && camelcaseKeys(user);
+}
+
+export async function updateProfileInfoById(
+  userId: number,
+  name: string,
+  surname: string,
+  email: string,
+  age: string,
+  gender: string,
+  size: string,
+  activityLevel: string,
+  kids: boolean,
+  pets: boolean,
+  service: boolean,
+) {
+  if (!userId) return undefined;
+  const [profile] = await sql<[User | undefined]>`
+  UPDATE profiles
+    SET
+      name = ${name},
+      surname = ${surname},
+      email = ${email},
+      gender = ${gender},
+      size= ${size},
+      age= ${age},
+      activity_level= ${activityLevel},
+      kids= ${kids},
+      pets=  ${pets},
+      service= ${service}
+    WHERE
+      user_id = ${userId}
+    RETURNING *
+  `;
+  return profile && camelcaseKeys(profile);
 }
 
 export async function createSession(token: string, userId: number) {
@@ -363,12 +470,13 @@ export async function updateShelterById(
   return shelter && camelcaseKeys(shelter);
 }
 
-export async function deleteDogById(dogId: number) {
+export async function deleteDogById(dogId: number, shelterId: number) {
   const dogs = await sql<DogType[]>`
     DELETE FROM
       dogs
     WHERE
-      id = ${dogId}
+      id = ${dogId} AND
+      shelter = ${shelterId}
     RETURNING
       *
   `;
@@ -506,6 +614,63 @@ export async function getAllFavouriteDogsByUserId(userId: number) {
       dogs.shelter = shelters.id AND
       dogs.id = favourites.dog_id AND
       favourites.user_id = ${userId};
+  `;
+  return dogs.map((dog) => {
+    // Convert snake case to camelCase
+    return camelcaseKeys(dog);
+  });
+}
+
+export async function insertDogDonation({
+  dogId,
+  userId,
+  amount,
+}: {
+  dogId: number;
+  userId: number;
+  amount: number;
+}) {
+  const [donation] = await sql<[Donation]>`
+  INSERT INTO donations
+  (user_id, dog_id, amount)
+  VALUES
+  (${userId}, ${dogId}, ${amount})
+  RETURNING
+  id AS donation_id,
+  user_id,
+  dog_id,
+  amount;
+  `;
+  return camelcaseKeys(donation);
+}
+
+export async function getDonationsByUserId(userId: number) {
+  const dogs = await sql<DogAndShelterType[]>`
+    SELECT
+      dogs.id AS dog_id,
+      dogs.dog_name,
+      dogs.dog_description,
+      dogs.age,
+      dogs.gender,
+      dogs.size,
+      dogs.activity_level,
+      dogs.kids,
+      dogs.pets,
+      dogs.service,
+      dogs.image,
+      shelters.id AS shelter_id,
+      shelters.shelter_name,
+      shelters.shelter_description,
+      shelters.address,
+      shelters.region,
+      shelters.phone,
+      donations.amount
+     FROM
+      dogs, shelters, donations
+     WHERE
+      dogs.shelter = shelters.id AND
+      dogs.id = donations.dog_id AND
+      donations.user_id = ${userId};
   `;
   return dogs.map((dog) => {
     // Convert snake case to camelCase
