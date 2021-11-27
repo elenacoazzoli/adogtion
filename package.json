@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "dotenv ley",
-    "heroku-postbuild": "yarn migrate up && yarn build"
+    "heroku-postbuild": "yarn migrate up && yarn build",
+    "test": "yarn jest"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -17,6 +18,7 @@
     "csrf": "^3.1.0",
     "dotenv-cli": "^4.1.0",
     "dotenv-safe": "^8.2.0",
+    "jest": "^27.3.1",
     "ley": "^0.7.1",
     "next": "11.1.2",
     "pg-connection-string": "^2.5.0",
