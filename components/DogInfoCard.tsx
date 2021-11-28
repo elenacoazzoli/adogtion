@@ -129,9 +129,11 @@ const DogInfoCard: FunctionComponent<DogInfoCardProps> = ({
               <DogAgeGender>
                 {getAgeRangeByYears(dog.age)} - {dog.gender}
               </DogAgeGender>
-              <ShelterLocation>
-                {dog.region}, {dog.shelterName}
-              </ShelterLocation>
+              {dog.shelterName && (
+                <ShelterLocation>
+                  {dog.region}, {dog.shelterName}
+                </ShelterLocation>
+              )}
             </DogInfoContainer>
           </DogCardContainer>
         </DogCardLink>

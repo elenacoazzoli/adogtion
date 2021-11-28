@@ -142,6 +142,25 @@ export async function getAllDogs() {
   });
 }
 
+export async function getAllShelters() {
+  const shelters = await sql<ShelterType[]>`
+    SELECT
+      shelters.id AS shelter_id,
+      shelters.shelter_name,
+      shelters.shelter_description,
+      shelters.address,
+      shelters.region,
+      shelters.phone
+     FROM
+      shelters;
+  `;
+
+  return shelters.map((shelter) => {
+    // Convert snake case to camelCase
+    return camelcaseKeys(shelter);
+  });
+}
+
 export async function getFirstFourDogs() {
   const dogs = await sql<DogAndShelterType[]>`
     SELECT

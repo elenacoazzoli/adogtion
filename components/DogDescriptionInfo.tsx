@@ -1,4 +1,5 @@
-import { FunctionComponent } from 'react';
+import Link from 'next/link';
+import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { DogAndShelterType } from '../util/database';
 
@@ -106,6 +107,17 @@ const ShelterContainer = styled.div`
   flex-direction: column;
 `;
 
+const ShelterLink = styled.a`
+  font-family: 'Playfair Display', serif;
+  color: #343f53;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: left;
+  margin: 0;
+  :hover {
+    text-decoration: underline 2px solid #343f53;
+  }
+`;
 const ButtonsContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 2fr 2fr;
@@ -270,7 +282,9 @@ const DogDescriptionInfo: FunctionComponent<DogDescriptionInfoProps> = ({
             <StatsandShelterTitles>
               Shelter and Contact info
             </StatsandShelterTitles>
-            <Text>{dog.shelterName}</Text>
+            <Link href={`/shelters/${dog.shelterId}`} passHref>
+              <ShelterLink>{dog.shelterName}</ShelterLink>
+            </Link>
             <Text>
               {dog.address} - {dog.region}
             </Text>

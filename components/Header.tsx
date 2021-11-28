@@ -153,19 +153,17 @@ const Header: FunctionComponent = () => {
             </>
           ) : (
             <>
-              {role === 2 && (
-                <>
-                  <AdminContainer>
-                    <Link href="/user/myshelter" passHref>
-                      <AdminLink>my shelter</AdminLink>
-                    </Link>
-                  </AdminContainer>
-                  <Divider>|</Divider>
-                </>
+              {role === 2 ? (
+                <AdminContainer>
+                  <Link href="/user/myshelter" passHref>
+                    <AdminLink>my shelter</AdminLink>
+                  </Link>
+                </AdminContainer>
+              ) : (
+                <Link href="/user/myprofile" passHref>
+                  <PageLink>{username}</PageLink>
+                </Link>
               )}
-              <Link href="/user/myprofile" passHref>
-                <PageLink>{username}</PageLink>
-              </Link>
               <Divider>|</Divider>
               <PageLink href="/logout">Log out </PageLink>
             </>
