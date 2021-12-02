@@ -39,7 +39,7 @@ To run this project locally, the following steps are needed:
 
 3. Create a User and a Database for the project.
 
-4. Create a copy of the `.env-example` and name it `.env` on the root of the project and modify it with your PostgreSQL credentials. The file should include these four environment variables:
+4. Create a copy of the `.env.example` and name it `.env` on the root of the project and modify it with your PostgreSQL credentials. The file should include these four environment variables:
 
 - PGHOST=localhost
 - PGDATABASE=\<YOUR_POSTGRES_DATABASE>
