@@ -46,7 +46,7 @@ To run this project locally, the following steps are needed:
 - PGUSERNAME=\<YOUR_POSTGRES_USERNAME>
 - PGPASSWORD=\<YOUR_POSTGRES_PASSWORD>
 
-5. TODO: Cloudinary
+5. Create a Cloudinary account and use the credentials for Image Uploads.
 
 6. Add the next environment variables to your .env file
 
