@@ -1,5 +1,5 @@
 import camelcaseKeys from 'camelcase-keys';
-import dotenvSafe from 'dotenv-safe';
+import { config } from 'dotenv-safe';
 import postgres from 'postgres';
 import setPostgresDefaultsOnHeroku from './setPostgresDefaultsOnHeroku';
 
@@ -79,8 +79,9 @@ export type Donation = {
 
 setPostgresDefaultsOnHeroku();
 
-// read the environment variables in the .env file to connect to Postgres
-dotenvSafe.config();
+// This loads all environment variables from a .env file
+// for all code after this line
+if (!process.env.FLY_IO) config();
 
 declare module globalThis {
   let postgresSqlClient: ReturnType<typeof postgres> | undefined;
@@ -89,26 +90,19 @@ declare module globalThis {
 // Connect only once to the database
 // https://github.com/vercel/next.js/issues/7811#issuecomment-715259370
 function connectOneTimeToDatabase() {
-  let sql;
-
-  if (process.env.NODE_ENV === 'production') {
-    // Heroku needs SSL connections but
-    // has an "unauthorized" certificate
-    // https://devcenter.heroku.com/changelog-items/852
-    sql = postgres({ ssl: { rejectUnauthorized: false } });
-  } else {
-    // When we're in development, make sure that we connect only
-    // once to the database
-    if (!globalThis.postgresSqlClient) {
-      globalThis.postgresSqlClient = postgres();
-    }
-    sql = globalThis.postgresSqlClient;
+  if (!globalThis.postgresSqlClient) {
+    globalThis.postgresSqlClient = postgres({
+      transform: {
+        ...postgres.camel,
+        undefined: null,
+      },
+    });
   }
-  return sql;
+  return globalThis.postgresSqlClient;
 }
 
-// Connect to postgres (only once)
-const sql = connectOneTimeToDatabase();
+// Connect to PostgreSQL
+export const sql = connectOneTimeToDatabase();
 
 export async function getAllDogs() {
   const dogs = await sql<DogAndShelterType[]>`
